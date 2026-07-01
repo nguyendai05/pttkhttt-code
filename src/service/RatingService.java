@@ -1,0 +1,72 @@
+package service;
+
+import model.DocumentItem;
+import model.Rating;
+import model.UserAccount;
+import model.enums.DocumentStatus;
+import model.enums.Role;
+import repository.DocumentRepository;
+import repository.RatingRepository;
+import util.IdGenerator;
+import util.OperationResult;
+
+/**
+ * OWNER: Hồ Nguyễn Quốc Nam
+ * FEATURE GROUP: Đánh giá tài liệu
+ * RELATED USE CASES: UC-7
+ * PURPOSE: Lưu rating 1-5, mỗi user một rating cho mỗi tài liệu, và tính trung bình.
+ */
+public class RatingService {
+    private final RatingRepository ratingRepository;
+    private final DocumentRepository documentRepository;
+    private final SessionManager sessionManager;
+
+    public RatingService(RatingRepository ratingRepository, DocumentRepository documentRepository, SessionManager sessionManager) {
+        this.ratingRepository = ratingRepository;
+        this.documentRepository = documentRepository;
+        this.sessionManager = sessionManager;
+    }
+
+    /**
+     * OWNER: Hồ Nguyễn Quốc Nam
+     * USE CASE: UC-7 - Đánh giá tài liệu
+     * ACTOR: User
+     * FLOW: Basic Flow / Alternative Flow / Exception Flow
+     * PURPOSE: Tạo mới hoặc cập nhật rating 1-5 của user cho một tài liệu APPROVED và trả về điểm trung bình.
+     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> RatingService -> RatingRepository/DocumentRepository -> SessionManager.
+     */
+    public OperationResult<Double> rateDocument(String documentId, int score) {
+        UserAccount user = sessionManager.getCurrentUser().orElse(null);
+        if (user == null || user.role != Role.USER) {
+            return OperationResult.fail("Chỉ User đã đăng nhập được đánh giá tài liệu.");
+        }
+        DocumentItem document = documentRepository.findById(documentId).orElse(null);
+        if (document == null || document.status != DocumentStatus.APPROVED) {
+            return OperationResult.fail("Chỉ được đánh giá tài liệu APPROVED.");
+        }
+        if (score < 1 || score > 5) {
+            return OperationResult.fail("Điểm rating phải từ 1 đến 5.");
+        }
+        Rating rating = ratingRepository.findByDocumentAndUser(documentId, user.id)
+                .orElse(new Rating(IdGenerator.nextId("RAT"), documentId, user.id, score));
+        rating.score = score;
+        ratingRepository.save(rating);
+        double average = calculateAverage(documentId);
+        return OperationResult.ok("Đánh giá thành công. Điểm trung bình hiện tại: " + average, average);
+    }
+
+    /**
+     * OWNER: Hồ Nguyễn Quốc Nam
+     * USE CASE: UC-7 - Tính rating trung bình
+     * ACTOR: User
+     * FLOW: Basic Flow
+     * PURPOSE: Tính điểm trung bình từ tất cả rating của tài liệu.
+     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> RatingService -> RatingRepository/DocumentRepository -> SessionManager.
+     */
+    public double calculateAverage(String documentId) {
+        return ratingRepository.findByDocument(documentId).stream()
+                .mapToInt(rating -> rating.score)
+                .average()
+                .orElse(0.0);
+    }
+}
