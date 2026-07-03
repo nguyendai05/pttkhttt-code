@@ -7,11 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Model entity dùng chung
- * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
- */
+
 public class DocumentItem {
     private String id;
     private String title;

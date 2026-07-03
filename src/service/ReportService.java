@@ -16,12 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * OWNER: Nguyễn Minh Luân
- * FEATURE GROUP: Báo cáo / Thống kê
- * RELATED USE CASES: UC-8
- * PURPOSE: Tổng hợp số liệu user, tài liệu, request post và ActivityLog cho Admin.
- */
+
 public class ReportService {
     private UserRepository userRepository;
     private DocumentRepository documentRepository;
@@ -39,14 +34,8 @@ public class ReportService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Nguyễn Minh Luân
-     * USE CASE: UC-8 - Báo cáo / Thống kê
-     * ACTOR: Admin
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Tạo report text gồm tổng user, user theo role/status, tài liệu theo trạng thái, top download, request theo trạng thái và log gần đây.
-     * SEQUENCE NOTE: ConsoleView -> ReportController -> ReportService -> UserRepository/DocumentRepository/RequestPostRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<String> generateReport() {
         UserAccount admin = sessionManager.getCurrentUser().orElse(null);
         if (admin == null || admin.getRole() != Role.ADMIN) {

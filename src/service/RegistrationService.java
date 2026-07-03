@@ -11,12 +11,7 @@ import util.InputValidator;
 import util.OperationResult;
 import util.PasswordUtil;
 
-/**
- * OWNER: Nguyễn Xuân Đại
- * FEATURE GROUP: Đăng ký tài khoản
- * RELATED USE CASES: UC-1
- * PURPOSE: Xử lý nghiệp vụ đăng ký tài khoản và tạo profile cơ bản.
- */
+
 public class RegistrationService {
     private UserRepository userRepository;
     private ProfileRepository profileRepository;
@@ -26,14 +21,8 @@ public class RegistrationService {
         this.profileRepository = profileRepository;
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-1 - Đăng ký
-     * ACTOR: Guest
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Kiểm tra dữ liệu đăng ký, chống trùng username/email, tạo USER ACTIVE và profile cơ bản.
-     * SEQUENCE NOTE: ConsoleView -> RegistrationController -> RegistrationService -> UserRepository/ProfileRepository -> SessionManager.
-     */
+
+
     public OperationResult<UserAccount> register(String username, String email, String password, String confirmPassword) {
         if (InputValidator.isBlank(username) || InputValidator.isBlank(email)
                 || InputValidator.isBlank(password) || InputValidator.isBlank(confirmPassword)) {

@@ -10,12 +10,7 @@ import repository.RatingRepository;
 import util.IdGenerator;
 import util.OperationResult;
 
-/**
- * OWNER: Hồ Nguyễn Quốc Nam
- * FEATURE GROUP: Đánh giá tài liệu
- * RELATED USE CASES: UC-7
- * PURPOSE: Lưu rating 1-5, mỗi user một rating cho mỗi tài liệu, và tính trung bình.
- */
+
 public class RatingService {
     private RatingRepository ratingRepository;
     private DocumentRepository documentRepository;
@@ -27,14 +22,8 @@ public class RatingService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Đánh giá tài liệu
-     * ACTOR: User
-     * FLOW: Basic Flow / Alternative Flow / Exception Flow
-     * PURPOSE: Tạo mới hoặc cập nhật rating 1-5 của user cho một tài liệu APPROVED và trả về điểm trung bình.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> RatingService -> RatingRepository/DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<Double> rateDocument(String documentId, int score) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
         if (user == null || user.getRole() != Role.USER) {
@@ -55,14 +44,8 @@ public class RatingService {
         return OperationResult.ok("Đánh giá thành công. Điểm trung bình hiện tại: " + average, average);
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Tính rating trung bình
-     * ACTOR: User
-     * FLOW: Basic Flow
-     * PURPOSE: Tính điểm trung bình từ tất cả rating của tài liệu.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> RatingService -> RatingRepository/DocumentRepository -> SessionManager.
-     */
+
+
     public double calculateAverage(String documentId) {
         return ratingRepository.findByDocument(documentId).stream()
                 .mapToInt(rating -> rating.getScore())

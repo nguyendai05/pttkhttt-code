@@ -9,11 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Repository in-memory dĂ¹ng chung
- * PURPOSE: ThĂ nh pháº§n ná»n táº£ng cá»§a pháº§n 1, phá»¥c vá»¥ mĂ´ phá»ng dá»¯ liá»‡u vĂ  luá»“ng nghiá»‡p vá»¥ á»Ÿ cĂ¡c pháº§n sau.
- */
+
 public class UserRepository {
     private List<UserAccount> users = new ArrayList<>();
 

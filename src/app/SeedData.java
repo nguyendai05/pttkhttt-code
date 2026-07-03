@@ -17,11 +17,7 @@ import util.PasswordUtil;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Seed data
- * PURPOSE: Sinh dữ liệu mẫu in-memory cho phần 1 gồm user, document, request post, comment, rating và activity log.
- */
+
 public class SeedData {
     private SeedData() {
     }

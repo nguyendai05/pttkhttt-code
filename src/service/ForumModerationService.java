@@ -15,12 +15,7 @@ import util.OperationResult;
 
 import java.util.List;
 
-/**
- * OWNER: Táº¡ VÄƒn Huy
- * FEATURE GROUP: Kiá»ƒm soĂ¡t ná»™i dung forum
- * RELATED USE CASES: UC-10c
- * PURPOSE: Moderator xem, áº©n hoáº·c xĂ³a bĂ i viáº¿t/bĂ¬nh luáº­n vi pháº¡m vĂ  ghi ActivityLog.
- */
+
 public class ForumModerationService {
     private RequestPostRepository requestPostRepository;
     private CommentRepository commentRepository;
@@ -35,18 +30,12 @@ public class ForumModerationService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Táº¡ VÄƒn Huy
-     * USE CASE: UC-10c - Xem ná»™i dung forum
-     * ACTOR: Moderator
-     * FLOW: Basic Flow / Alternative Flow
-     * PURPOSE: Moderator xem bĂ i cĂ´ng khai OPEN/FULFILLED vĂ  danh sĂ¡ch comment hiá»‡n cĂ³ Ä‘á»ƒ xá»­ lĂ½ vi pháº¡m.
-     * SEQUENCE NOTE: ConsoleView -> ForumModerationController -> ForumModerationService -> RequestPostRepository/CommentRepository -> SessionManager.
-     */
+
+
     public OperationResult<String> viewForumContent() {
         UserAccount moderator = requireModerator();
         if (moderator == null) {
-            return OperationResult.fail("Chá»‰ Moderator Ä‘Æ°á»£c xem mĂ n hĂ¬nh kiá»ƒm soĂ¡t forum.");
+            return OperationResult.fail("Chỉ Moderator được xem màn hình kiểm soát forum.");
         }
         StringBuilder builder = new StringBuilder();
         builder.append("Public posts:").append(System.lineSeparator());
@@ -57,28 +46,22 @@ public class ForumModerationService {
         for (Comment comment : commentRepository.findAll()) {
             builder.append(" - ").append(comment).append(System.lineSeparator());
         }
-        return OperationResult.ok("Danh sĂ¡ch ná»™i dung forum.", builder.toString());
+        return OperationResult.ok("Danh sách nội dung forum.", builder.toString());
     }
 
-    /**
-     * OWNER: Táº¡ VÄƒn Huy
-     * USE CASE: UC-10c - áº¨n/xĂ³a bĂ i viáº¿t vi pháº¡m
-     * ACTOR: Moderator
-     * FLOW: Basic Flow / Alternative Flow / Exception Flow
-     * PURPOSE: Moderator áº©n hoáº·c xĂ³a bĂ i viáº¿t vi pháº¡m, báº¯t buá»™c nháº­p lĂ½ do, in thĂ´ng bĂ¡o mĂ´ phá»ng vĂ  ghi ActivityLog.
-     * SEQUENCE NOTE: ConsoleView -> ForumModerationController -> ForumModerationService -> RequestPostRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<RequestPost> moderatePost(String postId, boolean delete, String reason) {
         UserAccount moderator = requireModerator();
         if (moderator == null) {
-            return OperationResult.fail("Chá»‰ Moderator Ä‘Æ°á»£c kiá»ƒm soĂ¡t bĂ i viáº¿t forum.");
+            return OperationResult.fail("Chỉ Moderator được kiểm soát bài viết forum.");
         }
         if (InputValidator.isBlank(reason)) {
-            return OperationResult.fail("LĂ½ do xá»­ lĂ½ lĂ  báº¯t buá»™c.");
+            return OperationResult.fail("Lý do xử lý là bắt buộc.");
         }
         RequestPost post = requestPostRepository.findById(postId).orElse(null);
         if (post == null) {
-            return OperationResult.fail("KhĂ´ng tĂ¬m tháº¥y bĂ i viáº¿t forum.");
+            return OperationResult.fail("Không tìm thấy bài viết forum.");
         }
         if (delete) {
             post.setDeleted(true);
@@ -90,29 +73,23 @@ public class ForumModerationService {
         requestPostRepository.save(post);
         activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), moderator.getId(),
                 delete ? "DELETE_FORUM_POST" : "HIDE_FORUM_POST", "REQUEST", post.getId(), reason.trim()));
-        System.out.println("ThĂ´ng bĂ¡o mĂ´ phá»ng tá»›i ngÆ°á»i Ä‘Äƒng " + post.getCreatorId() + ": Ná»™i dung bá»‹ xá»­ lĂ½. LĂ½ do: " + reason.trim());
-        return OperationResult.ok((delete ? "XĂ³a" : "áº¨n") + " bĂ i viáº¿t forum thĂ nh cĂ´ng.", post);
+        System.out.println("Thông báo mô phỏng tới người đăng " + post.getCreatorId() + ": Nội dung bị xử lý. Lý do: " + reason.trim());
+        return OperationResult.ok((delete ? "Xóa" : "Ẩn") + " bài viết forum thành công.", post);
     }
 
-    /**
-     * OWNER: Táº¡ VÄƒn Huy
-     * USE CASE: UC-10c - áº¨n/xĂ³a bĂ¬nh luáº­n vi pháº¡m
-     * ACTOR: Moderator
-     * FLOW: Basic Flow / Alternative Flow / Exception Flow
-     * PURPOSE: Moderator áº©n hoáº·c xĂ³a bĂ¬nh luáº­n vi pháº¡m, báº¯t buá»™c nháº­p lĂ½ do, in thĂ´ng bĂ¡o mĂ´ phá»ng vĂ  ghi ActivityLog.
-     * SEQUENCE NOTE: ConsoleView -> ForumModerationController -> ForumModerationService -> CommentRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<Comment> moderateComment(String commentId, boolean delete, String reason) {
         UserAccount moderator = requireModerator();
         if (moderator == null) {
-            return OperationResult.fail("Chá»‰ Moderator Ä‘Æ°á»£c kiá»ƒm soĂ¡t bĂ¬nh luáº­n forum.");
+            return OperationResult.fail("Chỉ Moderator được kiểm soát bình luận forum.");
         }
         if (InputValidator.isBlank(reason)) {
-            return OperationResult.fail("LĂ½ do xá»­ lĂ½ lĂ  báº¯t buá»™c.");
+            return OperationResult.fail("Lý do xử lý là bắt buộc.");
         }
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (comment == null) {
-            return OperationResult.fail("KhĂ´ng tĂ¬m tháº¥y bĂ¬nh luáº­n.");
+            return OperationResult.fail("Không tìm thấy bình luận.");
         }
         comment.setModerationReason(reason.trim());
         if (delete) {
@@ -123,8 +100,8 @@ public class ForumModerationService {
         commentRepository.save(comment);
         activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), moderator.getId(),
                 delete ? "DELETE_FORUM_COMMENT" : "HIDE_FORUM_COMMENT", "COMMENT", comment.getId(), reason.trim()));
-        System.out.println("ThĂ´ng bĂ¡o mĂ´ phá»ng tá»›i ngÆ°á»i bĂ¬nh luáº­n " + comment.getUserId() + ": BĂ¬nh luáº­n bá»‹ xá»­ lĂ½. LĂ½ do: " + reason.trim());
-        return OperationResult.ok((delete ? "XĂ³a" : "áº¨n") + " bĂ¬nh luáº­n forum thĂ nh cĂ´ng.", comment);
+        System.out.println("Thông báo mô phỏng tới người bình luận " + comment.getUserId() + ": Bình luận bị xử lý. Lý do: " + reason.trim());
+        return OperationResult.ok((delete ? "Xóa" : "Ẩn") + " bình luận forum thành công.", comment);
     }
 
     private UserAccount requireModerator() {

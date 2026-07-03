@@ -15,12 +15,7 @@ import util.OperationResult;
 
 import java.util.List;
 
-/**
- * OWNER: Hồ Nguyễn Quốc Nam
- * FEATURE GROUP: Bình luận tài liệu
- * RELATED USE CASES: UC-7
- * PURPOSE: Quản lý comment tài liệu, sửa/xóa comment của chính mình và kiểm duyệt comment vi phạm.
- */
+
 public class CommentService {
     private CommentRepository commentRepository;
     private DocumentRepository documentRepository;
@@ -35,14 +30,8 @@ public class CommentService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Bình luận tài liệu
-     * ACTOR: User
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: User bình luận vào tài liệu APPROVED, nội dung không được trống.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> CommentService -> CommentRepository/DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<Comment> addComment(String documentId, String content) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
         if (user == null || user.getRole() != Role.USER) {
@@ -60,26 +49,14 @@ public class CommentService {
         return OperationResult.ok("Bình luận tài liệu thành công.", comment);
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Xem bình luận tài liệu
-     * ACTOR: Guest/User/Moderator/Admin
-     * FLOW: Basic Flow
-     * PURPOSE: Lấy danh sách comment chưa deleted của một tài liệu.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> CommentService -> CommentRepository/DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<List<Comment>> getDocumentComments(String documentId) {
         return OperationResult.ok("Danh sách bình luận tài liệu.", commentRepository.findByTarget("DOCUMENT", documentId));
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Sửa bình luận của chính mình
-     * ACTOR: User
-     * FLOW: Alternative Flow / Exception Flow
-     * PURPOSE: User chỉ được sửa comment do chính mình tạo.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> CommentService -> CommentRepository/DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<Comment> updateOwnComment(String commentId, String newContent) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
         Comment comment = commentRepository.findById(commentId).orElse(null);
@@ -94,14 +71,8 @@ public class CommentService {
         return OperationResult.ok("Sửa bình luận thành công.", comment);
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Xóa bình luận của chính mình
-     * ACTOR: User
-     * FLOW: Alternative Flow / Exception Flow
-     * PURPOSE: User chỉ được đánh dấu deleted comment do chính mình tạo.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> CommentService -> CommentRepository/DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<Comment> deleteOwnComment(String commentId) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
         Comment comment = commentRepository.findById(commentId).orElse(null);
@@ -113,14 +84,8 @@ public class CommentService {
         return OperationResult.ok("Xóa bình luận thành công.", comment);
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Ẩn/xóa bình luận vi phạm
-     * ACTOR: Moderator/Admin
-     * FLOW: Alternative Flow / Exception Flow
-     * PURPOSE: Moderator/Admin ẩn hoặc xóa comment vi phạm, bắt buộc lý do và ghi ActivityLog.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> CommentService -> CommentRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<Comment> moderateComment(String commentId, boolean delete, String reason) {
         UserAccount actor = sessionManager.getCurrentUser().orElse(null);
         if (actor == null || (actor.getRole() != Role.MODERATOR && actor.getRole() != Role.ADMIN)) {

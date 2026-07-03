@@ -7,12 +7,7 @@ import util.InputValidator;
 import util.OperationResult;
 import util.PasswordUtil;
 
-/**
- * OWNER: Huỳnh Duy Tâm
- * FEATURE GROUP: Khôi phục mật khẩu bằng OTP
- * RELATED USE CASES: UC-2
- * PURPOSE: Điều phối yêu cầu OTP và đặt lại mật khẩu khi OTP hợp lệ.
- */
+
 public class PasswordRecoveryService {
     private UserRepository userRepository;
     private OtpService otpService;
@@ -22,14 +17,8 @@ public class PasswordRecoveryService {
         this.otpService = otpService;
     }
 
-    /**
-     * OWNER: Huỳnh Duy Tâm
-     * USE CASE: UC-2 - Yêu cầu OTP
-     * ACTOR: Guest
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Kiểm tra email tồn tại, sinh OTP và trả OTP để View in ra console mô phỏng gửi email.
-     * SEQUENCE NOTE: ConsoleView -> PasswordRecoveryController -> PasswordRecoveryService -> UserRepository/OtpRepository -> SessionManager.
-     */
+
+
     public OperationResult<OtpRequest> requestOtp(String email) {
         if (InputValidator.isBlank(email) || !InputValidator.isValidEmail(email)) {
             return OperationResult.fail("Email không hợp lệ.");
@@ -42,14 +31,8 @@ public class PasswordRecoveryService {
         return OperationResult.ok("OTP đã được sinh. View sẽ in OTP ra console để mô phỏng gửi email.", otpRequest);
     }
 
-    /**
-     * OWNER: Huỳnh Duy Tâm
-     * USE CASE: UC-2 - Đặt lại mật khẩu
-     * ACTOR: Guest
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Kiểm tra OTP đúng, chưa hết hạn, chưa dùng và cập nhật passwordHash mới.
-     * SEQUENCE NOTE: ConsoleView -> PasswordRecoveryController -> PasswordRecoveryService -> UserRepository/OtpRepository -> SessionManager.
-     */
+
+
     public OperationResult<Void> resetPassword(String email, String otpCode, String newPassword, String confirmPassword) {
         if (!InputValidator.isStrongPassword(newPassword)) {
             return OperationResult.fail("Password mới phải có tối thiểu 8 ký tự.");

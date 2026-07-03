@@ -7,11 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Repository in-memory dùng chung
- * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
- */
+
 public class CommentRepository {
     private List<Comment> comments = new ArrayList<>();
 

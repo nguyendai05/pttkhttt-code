@@ -13,12 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * OWNER: Nguyễn Xuân Đại
- * FEATURE GROUP: Upload tài liệu
- * RELATED USE CASES: UC-5a
- * PURPOSE: Xử lý nghiệp vụ tải lên tài liệu giả lập, không lưu file thật.
- */
+
 public class DocumentUploadService {
     private DocumentRepository documentRepository;
     private SessionManager sessionManager;
@@ -28,14 +23,8 @@ public class DocumentUploadService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-5a - Tải lên tài liệu
-     * ACTOR: User
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Kiểm tra user đăng nhập, metadata bắt buộc, phần mở rộng file, dung lượng mô phỏng và tạo tài liệu PENDING_REVIEW.
-     * SEQUENCE NOTE: ConsoleView -> DocumentUploadController -> DocumentUploadService -> DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<DocumentItem> upload(String fileName, String title, String description, String category,
                                                 String authorOrSource, String keywordsCsv, int year, double fileSizeMB) {
         UserAccount currentUser = sessionManager.getCurrentUser().orElse(null);

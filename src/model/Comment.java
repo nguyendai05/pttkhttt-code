@@ -4,11 +4,7 @@ import util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Model entity dùng chung
- * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
- */
+
 public class Comment {
     private String id;
     private String userId;

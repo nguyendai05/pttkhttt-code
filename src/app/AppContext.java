@@ -40,11 +40,7 @@ import service.UserManagementService;
 import view.AuthConsoleView;
 import view.DocumentConsoleView;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Application bootstrap
- * PURPOSE: Gom repository in-memory và wiring controller/service cho các phần 2, 3, 4.
- */
+
 public class AppContext {
     private UserRepository userRepository = new UserRepository();
     private ProfileRepository profileRepository = new ProfileRepository();

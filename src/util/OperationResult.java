@@ -1,10 +1,6 @@
 package util;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Tiện ích dùng chung
- * PURPOSE: Chuẩn hóa kết quả trả về từ service/controller cho phần 2.
- */
+
 public class OperationResult<T> {
     private boolean success;
     private String message;

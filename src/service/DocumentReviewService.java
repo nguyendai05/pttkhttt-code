@@ -14,12 +14,7 @@ import util.OperationResult;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * OWNER: Nguyễn Xuân Đại
- * FEATURE GROUP: Kiểm duyệt tài liệu
- * RELATED USE CASES: UC-5b
- * PURPOSE: Xử lý danh sách tài liệu chờ duyệt, approve/reject và ghi ActivityLog.
- */
+
 public class DocumentReviewService {
     private DocumentRepository documentRepository;
     private ActivityLogRepository activityLogRepository;
@@ -32,14 +27,8 @@ public class DocumentReviewService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-5b - Xem tài liệu chờ duyệt
-     * ACTOR: Moderator
-     * FLOW: Basic Flow / Alternative Flow
-     * PURPOSE: Moderator xem danh sách tài liệu đang ở trạng thái PENDING_REVIEW.
-     * SEQUENCE NOTE: ConsoleView -> DocumentReviewController -> DocumentReviewService -> DocumentRepository -> SessionManager.
-     */
+
+
     public OperationResult<List<DocumentItem>> getPendingDocuments() {
         UserAccount moderator = sessionManager.getCurrentUser().orElse(null);
         if (moderator == null || moderator.getRole() != Role.MODERATOR) {
@@ -48,14 +37,8 @@ public class DocumentReviewService {
         return OperationResult.ok("Danh sách tài liệu PENDING_REVIEW.", documentRepository.findByStatus(DocumentStatus.PENDING_REVIEW));
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-5b - Phê duyệt tài liệu
-     * ACTOR: Moderator
-     * FLOW: Basic Flow
-     * PURPOSE: Chuyển tài liệu PENDING_REVIEW sang APPROVED, ghi approvedBy, approvedAt và ActivityLog.
-     * SEQUENCE NOTE: ConsoleView -> DocumentReviewController -> DocumentReviewService -> DocumentRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<DocumentItem> approve(String documentId) {
         UserAccount moderator = sessionManager.getCurrentUser().orElse(null);
         if (moderator == null || moderator.getRole() != Role.MODERATOR) {
@@ -75,14 +58,8 @@ public class DocumentReviewService {
         return OperationResult.ok("Phê duyệt tài liệu thành công.", document);
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-5b - Từ chối tài liệu
-     * ACTOR: Moderator
-     * FLOW: Alternative Flow / Exception Flow
-     * PURPOSE: Chuyển tài liệu PENDING_REVIEW sang REJECTED, bắt buộc nhập lý do và ghi ActivityLog.
-     * SEQUENCE NOTE: ConsoleView -> DocumentReviewController -> DocumentReviewService -> DocumentRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<DocumentItem> reject(String documentId, String reason) {
         UserAccount moderator = sessionManager.getCurrentUser().orElse(null);
         if (moderator == null || moderator.getRole() != Role.MODERATOR) {

@@ -12,12 +12,7 @@ import util.PasswordUtil;
 
 import java.time.LocalDateTime;
 
-/**
- * OWNER: Huỳnh Duy Tâm
- * FEATURE GROUP: Đăng nhập / đăng xuất
- * RELATED USE CASES: UC-3
- * PURPOSE: Xác thực username/email, password, trạng thái tài khoản và cập nhật session.
- */
+
 public class AuthService {
     private UserRepository userRepository;
     private ActivityLogRepository activityLogRepository;
@@ -29,14 +24,8 @@ public class AuthService {
         this.sessionManager = sessionManager;
     }
 
-    /**
-     * OWNER: Huỳnh Duy Tâm
-     * USE CASE: UC-3 - Đăng nhập
-     * ACTOR: Guest
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Đăng nhập bằng username/email, kiểm tra password hash và tài khoản ACTIVE, sau đó set currentUser.
-     * SEQUENCE NOTE: ConsoleView -> AuthController -> AuthService -> UserRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<UserAccount> login(String identity, String password) {
         if (InputValidator.isBlank(identity) || InputValidator.isBlank(password)) {
             return OperationResult.fail("Vui lòng nhập username/email và password.");
@@ -66,14 +55,8 @@ public class AuthService {
         return OperationResult.ok("Đăng nhập thành công: " + user.getUsername() + " (" + user.getRole() + ").", user);
     }
 
-    /**
-     * OWNER: Huỳnh Duy Tâm
-     * USE CASE: UC-3 - Đăng xuất
-     * ACTOR: User/Moderator/Admin
-     * FLOW: Basic Flow
-     * PURPOSE: Clear currentUser khỏi SessionManager.
-     * SEQUENCE NOTE: ConsoleView -> AuthController -> AuthService -> UserRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public OperationResult<Void> logout() {
         if (!sessionManager.isLoggedIn()) {
             return OperationResult.fail("Chưa có người dùng đăng nhập.");

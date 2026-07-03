@@ -10,12 +10,7 @@ import util.OperationResult;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * OWNER: Team 17
- * FEATURE GROUP: Console menu chính
- * RELATED USE CASES: UC-1, UC-2, UC-3, UC-4, UC-5, UC-6, UC-7, UC-8, UC-9, UC-10
- * PURPOSE: Điều phối menu console theo trạng thái đăng nhập và role hiện tại.
- */
+
 public class MainMenuView {
     private AppContext context;
     private Scanner scanner = new Scanner(System.in, "UTF-8");
@@ -25,14 +20,8 @@ public class MainMenuView {
         this.context = context;
     }
 
-    /**
-     * OWNER: Team 17
-     * USE CASE: Console Shell - Menu chính
-     * ACTOR: Guest/User/Moderator/Admin
-     * FLOW: Basic Flow
-     * PURPOSE: Chọn menu Guest/User/Moderator/Admin theo currentUser trong SessionManager.
-     * SEQUENCE NOTE: ConsoleView -> Controller -> Service -> Repository -> SessionManager.
-     */
+
+
     public void start() {
         while (running) {
             UserAccount currentUser = context.getSessionManager().getCurrentUser().orElse(null);

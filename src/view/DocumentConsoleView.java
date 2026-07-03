@@ -11,12 +11,7 @@ import util.OperationResult;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * OWNER: Hồ Nguyễn Quốc Nam
- * FEATURE GROUP: Console view cho tài liệu, tìm kiếm, bình luận và rating
- * RELATED USE CASES: UC-5, UC-6, UC-7
- * PURPOSE: Nhập dữ liệu từ console, gọi controller phần 3 và in kết quả ra console.
- */
+
 public class DocumentConsoleView {
     private DocumentUploadController documentUploadController;
     private DocumentReviewController documentReviewController;
@@ -34,14 +29,8 @@ public class DocumentConsoleView {
         this.documentInteractionController = documentInteractionController;
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-5a - Tải lên tài liệu
-     * ACTOR: User
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Nhập metadata tài liệu và gọi DocumentUploadController.
-     * SEQUENCE NOTE: ConsoleView -> DocumentUploadController -> DocumentUploadService -> DocumentRepository -> SessionManager.
-     */
+
+
     public void showUploadForm() {
         printResult(documentUploadController.upload(
                 prompt("File name: "),
@@ -55,14 +44,8 @@ public class DocumentConsoleView {
         ));
     }
 
-    /**
-     * OWNER: Nguyễn Xuân Đại
-     * USE CASE: UC-5b - Kiểm duyệt tài liệu
-     * ACTOR: Moderator
-     * FLOW: Basic Flow / Alternative Flow / Exception Flow
-     * PURPOSE: In danh sách pending và gọi approve/reject theo lựa chọn.
-     * SEQUENCE NOTE: ConsoleView -> DocumentReviewController -> DocumentReviewService -> DocumentRepository/ActivityLogRepository -> SessionManager.
-     */
+
+
     public void showReviewForm() {
         OperationResult<List<DocumentItem>> pending = documentReviewController.getPendingDocuments();
         printResult(pending);
@@ -79,14 +62,8 @@ public class DocumentConsoleView {
         }
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-6 - Tra cứu và khai thác tài liệu
-     * ACTOR: Guest/User/Moderator/Admin
-     * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: Tìm kiếm tài liệu APPROVED, xem chi tiết và tải xuống mô phỏng nếu người dùng đã đăng nhập.
-     * SEQUENCE NOTE: ConsoleView -> DocumentSearchController -> DocumentSearchService -> DocumentRepository -> SessionManager.
-     */
+
+
     public void showSearchForm() {
         OperationResult<List<DocumentItem>> result = documentSearchController.searchApproved(prompt("Keyword: "));
         printResult(result);
@@ -95,14 +72,8 @@ public class DocumentConsoleView {
         }
     }
 
-    /**
-     * OWNER: Hồ Nguyễn Quốc Nam
-     * USE CASE: UC-7 - Bình luận và đánh giá tài liệu
-     * ACTOR: User/Moderator/Admin
-     * FLOW: Basic Flow / Alternative Flow / Exception Flow
-     * PURPOSE: Gọi các controller comment/rating theo lựa chọn console.
-     * SEQUENCE NOTE: ConsoleView -> DocumentInteractionController -> CommentService/RatingService -> Repository -> SessionManager.
-     */
+
+
     public void showInteractionForm() {
         String documentId = prompt("Document ID: ");
         System.out.println("1. Add comment");
