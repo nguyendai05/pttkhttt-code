@@ -18,11 +18,11 @@ import java.util.Scanner;
  * PURPOSE: Nhập dữ liệu từ console, gọi controller phần 3 và in kết quả ra console.
  */
 public class DocumentConsoleView {
-    private final DocumentUploadController documentUploadController;
-    private final DocumentReviewController documentReviewController;
-    private final DocumentSearchController documentSearchController;
-    private final DocumentInteractionController documentInteractionController;
-    private final Scanner scanner = new Scanner(System.in, "UTF-8");
+    private DocumentUploadController documentUploadController;
+    private DocumentReviewController documentReviewController;
+    private DocumentSearchController documentSearchController;
+    private DocumentInteractionController documentInteractionController;
+    private Scanner scanner = new Scanner(System.in, "UTF-8");
 
     public DocumentConsoleView(DocumentUploadController documentUploadController,
                                DocumentReviewController documentReviewController,

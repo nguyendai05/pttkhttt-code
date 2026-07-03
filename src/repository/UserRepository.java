@@ -11,33 +11,33 @@ import java.util.stream.Collectors;
 
 /**
  * OWNER: Team 17
- * FEATURE GROUP: Repository in-memory dùng chung
- * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
+ * FEATURE GROUP: Repository in-memory dĂ¹ng chung
+ * PURPOSE: ThĂ nh pháº§n ná»n táº£ng cá»§a pháº§n 1, phá»¥c vá»¥ mĂ´ phá»ng dá»¯ liá»‡u vĂ  luá»“ng nghiá»‡p vá»¥ á»Ÿ cĂ¡c pháº§n sau.
  */
 public class UserRepository {
-    private final List<UserAccount> users = new ArrayList<>();
+    private List<UserAccount> users = new ArrayList<>();
 
     public void save(UserAccount user) {
-        findById(user.id).ifPresent(users::remove);
+        findById(user.getId()).ifPresent(users::remove);
         users.add(user);
     }
 
     public Optional<UserAccount> findById(String id) {
-        return users.stream().filter(user -> user.id.equalsIgnoreCase(id)).findFirst();
+        return users.stream().filter(user -> user.getId().equalsIgnoreCase(id)).findFirst();
     }
 
     public Optional<UserAccount> findByUsernameOrEmail(String identity) {
         return users.stream()
-                .filter(user -> user.username.equalsIgnoreCase(identity) || user.email.equalsIgnoreCase(identity))
+                .filter(user -> user.getUsername().equalsIgnoreCase(identity) || user.getEmail().equalsIgnoreCase(identity))
                 .findFirst();
     }
 
     public boolean existsByUsername(String username) {
-        return users.stream().anyMatch(user -> user.username.equalsIgnoreCase(username));
+        return users.stream().anyMatch(user -> user.getUsername().equalsIgnoreCase(username));
     }
 
     public boolean existsByEmail(String email) {
-        return users.stream().anyMatch(user -> user.email.equalsIgnoreCase(email));
+        return users.stream().anyMatch(user -> user.getEmail().equalsIgnoreCase(email));
     }
 
     public List<UserAccount> findAll() {
@@ -48,15 +48,15 @@ public class UserRepository {
         String lower = keyword == null ? "" : keyword.toLowerCase();
         return users.stream()
                 .filter(user -> lower.isEmpty()
-                        || user.id.toLowerCase().contains(lower)
-                        || user.username.toLowerCase().contains(lower)
-                        || user.email.toLowerCase().contains(lower))
-                .filter(user -> role == null || user.role == role)
-                .filter(user -> status == null || user.status == status)
+                        || user.getId().toLowerCase().contains(lower)
+                        || user.getUsername().toLowerCase().contains(lower)
+                        || user.getEmail().toLowerCase().contains(lower))
+                .filter(user -> role == null || user.getRole() == role)
+                .filter(user -> status == null || user.getStatus() == status)
                 .collect(Collectors.toList());
     }
 
     public long countActiveAdmins() {
-        return users.stream().filter(user -> user.role == Role.ADMIN && user.status == AccountStatus.ACTIVE).count();
+        return users.stream().filter(user -> user.getRole() == Role.ADMIN && user.getStatus() == AccountStatus.ACTIVE).count();
     }
 }

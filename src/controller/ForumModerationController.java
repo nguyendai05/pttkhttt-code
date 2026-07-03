@@ -12,7 +12,7 @@ import util.OperationResult;
  * PURPOSE: Nhận request kiểm soát nội dung forum từ ConsoleView và gọi ForumModerationService.
  */
 public class ForumModerationController {
-    private final ForumModerationService forumModerationService;
+    private ForumModerationService forumModerationService;
 
     public ForumModerationController(ForumModerationService forumModerationService) {
         this.forumModerationService = forumModerationService;

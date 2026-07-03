@@ -11,7 +11,7 @@ import util.OperationResult;
  * PURPOSE: Nhận request quên mật khẩu từ ConsoleView và gọi PasswordRecoveryService.
  */
 public class PasswordRecoveryController {
-    private final PasswordRecoveryService passwordRecoveryService;
+    private PasswordRecoveryService passwordRecoveryService;
 
     public PasswordRecoveryController(PasswordRecoveryService passwordRecoveryService) {
         this.passwordRecoveryService = passwordRecoveryService;

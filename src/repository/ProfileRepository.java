@@ -12,14 +12,14 @@ import java.util.Optional;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class ProfileRepository {
-    private final List<UserProfile> profiles = new ArrayList<>();
+    private List<UserProfile> profiles = new ArrayList<>();
 
     public void save(UserProfile profile) {
-        findByUserId(profile.userId).ifPresent(profiles::remove);
+        findByUserId(profile.getUserId()).ifPresent(profiles::remove);
         profiles.add(profile);
     }
 
     public Optional<UserProfile> findByUserId(String userId) {
-        return profiles.stream().filter(profile -> profile.userId.equals(userId)).findFirst();
+        return profiles.stream().filter(profile -> profile.getUserId().equals(userId)).findFirst();
     }
 }

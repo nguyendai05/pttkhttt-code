@@ -13,21 +13,21 @@ import java.util.stream.Collectors;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class CommentRepository {
-    private final List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public void save(Comment comment) {
-        findById(comment.id).ifPresent(comments::remove);
+        findById(comment.getId()).ifPresent(comments::remove);
         comments.add(comment);
     }
 
     public Optional<Comment> findById(String id) {
-        return comments.stream().filter(comment -> comment.id.equalsIgnoreCase(id)).findFirst();
+        return comments.stream().filter(comment -> comment.getId().equalsIgnoreCase(id)).findFirst();
     }
 
     public List<Comment> findByTarget(String targetType, String targetId) {
         return comments.stream()
-                .filter(comment -> comment.targetType.equals(targetType) && comment.targetId.equals(targetId))
-                .filter(comment -> !comment.deleted && !comment.hidden)
+                .filter(comment -> comment.getTargetType().equals(targetType) && comment.getTargetId().equals(targetId))
+                .filter(comment -> !comment.isDeleted() && !comment.isHidden())
                 .collect(Collectors.toList());
     }
 

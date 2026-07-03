@@ -11,7 +11,7 @@ import util.OperationResult;
  * PURPOSE: Nhận request login/logout từ ConsoleView và gọi AuthService.
  */
 public class AuthController {
-    private final AuthService authService;
+    private AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;

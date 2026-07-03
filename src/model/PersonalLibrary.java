@@ -9,12 +9,36 @@ import java.util.List;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class PersonalLibrary {
-    public String userId;
-    public List<String> savedDocumentIds = new ArrayList<>();
-    public List<Collection> collections = new ArrayList<>();
+    private String userId;
+    private List<String> savedDocumentIds = new ArrayList<>();
+    private List<Collection> collections = new ArrayList<>();
 
     public PersonalLibrary(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public List<String> getSavedDocumentIds() {
+        return savedDocumentIds;
+    }
+
+    public void setSavedDocumentIds(List<String> savedDocumentIds) {
+        this.savedDocumentIds = savedDocumentIds;
+    }
+
+    public List<Collection> getCollections() {
+        return collections;
+    }
+
+    public void setCollections(List<Collection> collections) {
+        this.collections = collections;
     }
 
     @Override

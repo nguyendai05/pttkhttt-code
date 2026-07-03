@@ -14,7 +14,7 @@ import java.util.List;
  * PURPOSE: Nhận request tạo/quản lý/duyệt bài yêu cầu từ ConsoleView và gọi RequestPostService.
  */
 public class RequestPostController {
-    private final RequestPostService requestPostService;
+    private RequestPostService requestPostService;
 
     public RequestPostController(RequestPostService requestPostService) {
         this.requestPostService = requestPostService;

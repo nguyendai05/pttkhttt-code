@@ -11,7 +11,7 @@ import util.OperationResult;
  * PURPOSE: Nhận request upload giả lập từ ConsoleView và chuyển cho DocumentUploadService.
  */
 public class DocumentUploadController {
-    private final DocumentUploadService documentUploadService;
+    private DocumentUploadService documentUploadService;
 
     public DocumentUploadController(DocumentUploadService documentUploadService) {
         this.documentUploadService = documentUploadService;

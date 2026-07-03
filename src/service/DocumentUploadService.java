@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
  * PURPOSE: Xử lý nghiệp vụ tải lên tài liệu giả lập, không lưu file thật.
  */
 public class DocumentUploadService {
-    private final DocumentRepository documentRepository;
-    private final SessionManager sessionManager;
+    private DocumentRepository documentRepository;
+    private SessionManager sessionManager;
 
     public DocumentUploadService(DocumentRepository documentRepository, SessionManager sessionManager) {
         this.documentRepository = documentRepository;
@@ -39,7 +39,7 @@ public class DocumentUploadService {
     public OperationResult<DocumentItem> upload(String fileName, String title, String description, String category,
                                                 String authorOrSource, String keywordsCsv, int year, double fileSizeMB) {
         UserAccount currentUser = sessionManager.getCurrentUser().orElse(null);
-        if (currentUser == null || currentUser.role != Role.USER) {
+        if (currentUser == null || currentUser.getRole() != Role.USER) {
             return OperationResult.fail("Chỉ User đã đăng nhập được tải lên tài liệu.");
         }
         if (InputValidator.isBlank(fileName) || InputValidator.isBlank(title) || InputValidator.isBlank(description)
@@ -69,10 +69,10 @@ public class DocumentUploadService {
                 keywords,
                 year,
                 fileName.trim(),
-                currentUser.id,
+                currentUser.getId(),
                 DocumentStatus.PENDING_REVIEW
         );
-        document.fileSizeMB = fileSizeMB;
+        document.setFileSizeMB(fileSizeMB);
         documentRepository.save(document);
         return OperationResult.ok("Tải lên tài liệu thành công. Tài liệu đang chờ Moderator duyệt.", document);
     }

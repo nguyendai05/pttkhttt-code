@@ -21,9 +21,9 @@ import java.util.List;
  * PURPOSE: Xử lý danh sách tài liệu chờ duyệt, approve/reject và ghi ActivityLog.
  */
 public class DocumentReviewService {
-    private final DocumentRepository documentRepository;
-    private final ActivityLogRepository activityLogRepository;
-    private final SessionManager sessionManager;
+    private DocumentRepository documentRepository;
+    private ActivityLogRepository activityLogRepository;
+    private SessionManager sessionManager;
 
     public DocumentReviewService(DocumentRepository documentRepository, ActivityLogRepository activityLogRepository,
                                  SessionManager sessionManager) {
@@ -42,7 +42,7 @@ public class DocumentReviewService {
      */
     public OperationResult<List<DocumentItem>> getPendingDocuments() {
         UserAccount moderator = sessionManager.getCurrentUser().orElse(null);
-        if (moderator == null || moderator.role != Role.MODERATOR) {
+        if (moderator == null || moderator.getRole() != Role.MODERATOR) {
             return OperationResult.fail("Chỉ Moderator được xem tài liệu chờ duyệt.");
         }
         return OperationResult.ok("Danh sách tài liệu PENDING_REVIEW.", documentRepository.findByStatus(DocumentStatus.PENDING_REVIEW));
@@ -58,20 +58,20 @@ public class DocumentReviewService {
      */
     public OperationResult<DocumentItem> approve(String documentId) {
         UserAccount moderator = sessionManager.getCurrentUser().orElse(null);
-        if (moderator == null || moderator.role != Role.MODERATOR) {
+        if (moderator == null || moderator.getRole() != Role.MODERATOR) {
             return OperationResult.fail("Chỉ Moderator được phê duyệt tài liệu.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.PENDING_REVIEW) {
+        if (document == null || document.getStatus() != DocumentStatus.PENDING_REVIEW) {
             return OperationResult.fail("Tài liệu không tồn tại hoặc không ở trạng thái PENDING_REVIEW.");
         }
-        document.status = DocumentStatus.APPROVED;
-        document.approvedBy = moderator.id;
-        document.approvedAt = LocalDateTime.now();
-        document.rejectionReason = null;
+        document.setStatus(DocumentStatus.APPROVED);
+        document.setApprovedBy(moderator.getId());
+        document.setApprovedAt(LocalDateTime.now());
+        document.setRejectionReason(null);
         documentRepository.save(document);
-        activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), moderator.id, "APPROVE_DOCUMENT",
-                "DOCUMENT", document.id, "Moderator phê duyệt tài liệu."));
+        activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), moderator.getId(), "APPROVE_DOCUMENT",
+                "DOCUMENT", document.getId(), "Moderator phê duyệt tài liệu."));
         return OperationResult.ok("Phê duyệt tài liệu thành công.", document);
     }
 
@@ -85,21 +85,21 @@ public class DocumentReviewService {
      */
     public OperationResult<DocumentItem> reject(String documentId, String reason) {
         UserAccount moderator = sessionManager.getCurrentUser().orElse(null);
-        if (moderator == null || moderator.role != Role.MODERATOR) {
+        if (moderator == null || moderator.getRole() != Role.MODERATOR) {
             return OperationResult.fail("Chỉ Moderator được từ chối tài liệu.");
         }
         if (InputValidator.isBlank(reason)) {
             return OperationResult.fail("Lý do từ chối là bắt buộc.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.PENDING_REVIEW) {
+        if (document == null || document.getStatus() != DocumentStatus.PENDING_REVIEW) {
             return OperationResult.fail("Tài liệu không tồn tại hoặc không ở trạng thái PENDING_REVIEW.");
         }
-        document.status = DocumentStatus.REJECTED;
-        document.rejectionReason = reason.trim();
+        document.setStatus(DocumentStatus.REJECTED);
+        document.setRejectionReason(reason.trim());
         documentRepository.save(document);
-        activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), moderator.id, "REJECT_DOCUMENT",
-                "DOCUMENT", document.id, reason.trim()));
+        activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), moderator.getId(), "REJECT_DOCUMENT",
+                "DOCUMENT", document.getId(), reason.trim()));
         return OperationResult.ok("Từ chối tài liệu thành công.", document);
     }
 }

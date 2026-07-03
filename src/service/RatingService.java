@@ -17,9 +17,9 @@ import util.OperationResult;
  * PURPOSE: Lưu rating 1-5, mỗi user một rating cho mỗi tài liệu, và tính trung bình.
  */
 public class RatingService {
-    private final RatingRepository ratingRepository;
-    private final DocumentRepository documentRepository;
-    private final SessionManager sessionManager;
+    private RatingRepository ratingRepository;
+    private DocumentRepository documentRepository;
+    private SessionManager sessionManager;
 
     public RatingService(RatingRepository ratingRepository, DocumentRepository documentRepository, SessionManager sessionManager) {
         this.ratingRepository = ratingRepository;
@@ -37,19 +37,19 @@ public class RatingService {
      */
     public OperationResult<Double> rateDocument(String documentId, int score) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
-        if (user == null || user.role != Role.USER) {
+        if (user == null || user.getRole() != Role.USER) {
             return OperationResult.fail("Chỉ User đã đăng nhập được đánh giá tài liệu.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.APPROVED) {
+        if (document == null || document.getStatus() != DocumentStatus.APPROVED) {
             return OperationResult.fail("Chỉ được đánh giá tài liệu APPROVED.");
         }
         if (score < 1 || score > 5) {
             return OperationResult.fail("Điểm rating phải từ 1 đến 5.");
         }
-        Rating rating = ratingRepository.findByDocumentAndUser(documentId, user.id)
-                .orElse(new Rating(IdGenerator.nextId("RAT"), documentId, user.id, score));
-        rating.score = score;
+        Rating rating = ratingRepository.findByDocumentAndUser(documentId, user.getId())
+                .orElse(new Rating(IdGenerator.nextId("RAT"), documentId, user.getId(), score));
+        rating.setScore(score);
         ratingRepository.save(rating);
         double average = calculateAverage(documentId);
         return OperationResult.ok("Đánh giá thành công. Điểm trung bình hiện tại: " + average, average);
@@ -65,7 +65,7 @@ public class RatingService {
      */
     public double calculateAverage(String documentId) {
         return ratingRepository.findByDocument(documentId).stream()
-                .mapToInt(rating -> rating.score)
+                .mapToInt(rating -> rating.getScore())
                 .average()
                 .orElse(0.0);
     }

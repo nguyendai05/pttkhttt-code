@@ -18,8 +18,8 @@ import util.PasswordUtil;
  * PURPOSE: Xử lý nghiệp vụ đăng ký tài khoản và tạo profile cơ bản.
  */
 public class RegistrationService {
-    private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
+    private UserRepository userRepository;
+    private ProfileRepository profileRepository;
 
     public RegistrationService(UserRepository userRepository, ProfileRepository profileRepository) {
         this.userRepository = userRepository;
@@ -66,7 +66,7 @@ public class RegistrationService {
         userRepository.save(user);
         profileRepository.save(new UserProfile(
                 IdGenerator.nextId("PRO"),
-                user.id,
+                user.getId(),
                 username.trim(),
                 "Hồ sơ cơ bản được tạo khi đăng ký"
         ));

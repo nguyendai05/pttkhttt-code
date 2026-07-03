@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class ActivityLog {
-    public String id;
-    public String actorId;
-    public String action;
-    public String targetType;
-    public String targetId;
-    public String description;
-    public LocalDateTime createdAt;
+    private String id;
+    private String actorId;
+    private String action;
+    private String targetType;
+    private String targetId;
+    private String description;
+    private LocalDateTime createdAt;
 
     public ActivityLog(String id, String actorId, String action, String targetType, String targetId, String description) {
         this.id = id;
@@ -26,6 +26,62 @@ public class ActivityLog {
         this.targetId = targetId;
         this.description = description;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getActorId() {
+        return actorId;
+    }
+
+    public void setActorId(String actorId) {
+        this.actorId = actorId;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

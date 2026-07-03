@@ -19,16 +19,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * OWNER: Tạ Văn Huy
- * FEATURE GROUP: Hồ sơ / thư viện cá nhân
+ * OWNER: Táº¡ VÄƒn Huy
+ * FEATURE GROUP: Há»“ sÆ¡ / thÆ° viá»‡n cĂ¡ nhĂ¢n
  * RELATED USE CASES: UC-9
- * PURPOSE: Quản lý profile, tài liệu đã upload, tài liệu đã lưu và collection cá nhân.
+ * PURPOSE: Quáº£n lĂ½ profile, tĂ i liá»‡u Ä‘Ă£ upload, tĂ i liá»‡u Ä‘Ă£ lÆ°u vĂ  collection cĂ¡ nhĂ¢n.
  */
 public class PersonalLibraryService {
-    private final ProfileRepository profileRepository;
-    private final DocumentRepository documentRepository;
-    private final PersonalLibraryRepository personalLibraryRepository;
-    private final SessionManager sessionManager;
+    private ProfileRepository profileRepository;
+    private DocumentRepository documentRepository;
+    private PersonalLibraryRepository personalLibraryRepository;
+    private SessionManager sessionManager;
 
     public PersonalLibraryService(ProfileRepository profileRepository, DocumentRepository documentRepository,
                                   PersonalLibraryRepository personalLibraryRepository, SessionManager sessionManager) {
@@ -39,132 +39,132 @@ public class PersonalLibraryService {
     }
 
     /**
-     * OWNER: Tạ Văn Huy
-     * USE CASE: UC-9 - Xem hồ sơ cá nhân
+     * OWNER: Táº¡ VÄƒn Huy
+     * USE CASE: UC-9 - Xem há»“ sÆ¡ cĂ¡ nhĂ¢n
      * ACTOR: User
      * FLOW: Basic Flow
-     * PURPOSE: User xem profile của chính mình.
+     * PURPOSE: User xem profile cá»§a chĂ­nh mĂ¬nh.
      * SEQUENCE NOTE: ConsoleView -> PersonalLibraryController -> PersonalLibraryService -> ProfileRepository -> SessionManager.
      */
     public OperationResult<UserProfile> viewProfile() {
         UserAccount user = requireUser();
         if (user == null) {
-            return OperationResult.fail("Chỉ User đã đăng nhập được xem profile cá nhân.");
+            return OperationResult.fail("Chá»‰ User Ä‘Ă£ Ä‘Äƒng nháº­p Ä‘Æ°á»£c xem profile cĂ¡ nhĂ¢n.");
         }
-        return OperationResult.ok("Hồ sơ cá nhân.", profileRepository.findByUserId(user.id).orElse(null));
+        return OperationResult.ok("Há»“ sÆ¡ cĂ¡ nhĂ¢n.", profileRepository.findByUserId(user.getId()).orElse(null));
     }
 
     /**
-     * OWNER: Tạ Văn Huy
-     * USE CASE: UC-9 - Cập nhật hồ sơ cá nhân
+     * OWNER: Táº¡ VÄƒn Huy
+     * USE CASE: UC-9 - Cáº­p nháº­t há»“ sÆ¡ cĂ¡ nhĂ¢n
      * ACTOR: User
      * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: User cập nhật fullName và bio của chính mình.
+     * PURPOSE: User cáº­p nháº­t fullName vĂ  bio cá»§a chĂ­nh mĂ¬nh.
      * SEQUENCE NOTE: ConsoleView -> PersonalLibraryController -> PersonalLibraryService -> ProfileRepository -> SessionManager.
      */
     public OperationResult<UserProfile> updateProfile(String fullName, String bio) {
         UserAccount user = requireUser();
         if (user == null) {
-            return OperationResult.fail("Chỉ User đã đăng nhập được cập nhật profile.");
+            return OperationResult.fail("Chá»‰ User Ä‘Ă£ Ä‘Äƒng nháº­p Ä‘Æ°á»£c cáº­p nháº­t profile.");
         }
         if (InputValidator.isBlank(fullName)) {
-            return OperationResult.fail("FullName không được trống.");
+            return OperationResult.fail("FullName khĂ´ng Ä‘Æ°á»£c trá»‘ng.");
         }
-        UserProfile profile = profileRepository.findByUserId(user.id)
-                .orElse(new UserProfile(IdGenerator.nextId("PRO"), user.id, fullName.trim(), ""));
-        profile.fullName = fullName.trim();
-        profile.bio = bio == null ? "" : bio.trim();
+        UserProfile profile = profileRepository.findByUserId(user.getId())
+                .orElse(new UserProfile(IdGenerator.nextId("PRO"), user.getId(), fullName.trim(), ""));
+        profile.setFullName(fullName.trim());
+        profile.setBio(bio == null ? "" : bio.trim());
         profileRepository.save(profile);
-        return OperationResult.ok("Cập nhật profile thành công.", profile);
+        return OperationResult.ok("Cáº­p nháº­t profile thĂ nh cĂ´ng.", profile);
     }
 
     /**
-     * OWNER: Tạ Văn Huy
-     * USE CASE: UC-9 - Xem tài liệu mình upload
+     * OWNER: Táº¡ VÄƒn Huy
+     * USE CASE: UC-9 - Xem tĂ i liá»‡u mĂ¬nh upload
      * ACTOR: User
      * FLOW: Basic Flow
-     * PURPOSE: User xem tài liệu do chính mình upload, bao gồm lý do từ chối nếu REJECTED.
+     * PURPOSE: User xem tĂ i liá»‡u do chĂ­nh mĂ¬nh upload, bao gá»“m lĂ½ do tá»« chá»‘i náº¿u REJECTED.
      * SEQUENCE NOTE: ConsoleView -> PersonalLibraryController -> PersonalLibraryService -> DocumentRepository -> SessionManager.
      */
     public OperationResult<List<DocumentItem>> myUploadedDocuments() {
         UserAccount user = requireUser();
         if (user == null) {
-            return OperationResult.fail("Chỉ User đã đăng nhập được xem tài liệu mình upload.");
+            return OperationResult.fail("Chá»‰ User Ä‘Ă£ Ä‘Äƒng nháº­p Ä‘Æ°á»£c xem tĂ i liá»‡u mĂ¬nh upload.");
         }
-        return OperationResult.ok("Danh sách tài liệu đã upload.", documentRepository.findByUploader(user.id));
+        return OperationResult.ok("Danh sĂ¡ch tĂ i liá»‡u Ä‘Ă£ upload.", documentRepository.findByUploader(user.getId()));
     }
 
     /**
-     * OWNER: Tạ Văn Huy
-     * USE CASE: UC-9 - Lưu tài liệu vào thư viện cá nhân
+     * OWNER: Táº¡ VÄƒn Huy
+     * USE CASE: UC-9 - LÆ°u tĂ i liá»‡u vĂ o thÆ° viá»‡n cĂ¡ nhĂ¢n
      * ACTOR: User
      * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: User lưu tài liệu APPROVED vào thư viện cá nhân của chính mình.
+     * PURPOSE: User lÆ°u tĂ i liá»‡u APPROVED vĂ o thÆ° viá»‡n cĂ¡ nhĂ¢n cá»§a chĂ­nh mĂ¬nh.
      * SEQUENCE NOTE: ConsoleView -> PersonalLibraryController -> PersonalLibraryService -> PersonalLibraryRepository/DocumentRepository -> SessionManager.
      */
     public OperationResult<PersonalLibrary> saveApprovedDocument(String documentId) {
         UserAccount user = requireUser();
         if (user == null) {
-            return OperationResult.fail("Chỉ User đã đăng nhập được lưu tài liệu.");
+            return OperationResult.fail("Chá»‰ User Ä‘Ă£ Ä‘Äƒng nháº­p Ä‘Æ°á»£c lÆ°u tĂ i liá»‡u.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.APPROVED) {
-            return OperationResult.fail("Chỉ được lưu tài liệu APPROVED.");
+        if (document == null || document.getStatus() != DocumentStatus.APPROVED) {
+            return OperationResult.fail("Chá»‰ Ä‘Æ°á»£c lÆ°u tĂ i liá»‡u APPROVED.");
         }
-        PersonalLibrary library = personalLibraryRepository.getOrCreate(user.id);
-        if (!library.savedDocumentIds.contains(documentId)) {
-            library.savedDocumentIds.add(documentId);
+        PersonalLibrary library = personalLibraryRepository.getOrCreate(user.getId());
+        if (!library.getSavedDocumentIds().contains(documentId)) {
+            library.getSavedDocumentIds().add(documentId);
         }
         personalLibraryRepository.save(library);
-        return OperationResult.ok("Lưu tài liệu vào thư viện cá nhân thành công.", library);
+        return OperationResult.ok("LÆ°u tĂ i liá»‡u vĂ o thÆ° viá»‡n cĂ¡ nhĂ¢n thĂ nh cĂ´ng.", library);
     }
 
     /**
-     * OWNER: Tạ Văn Huy
-     * USE CASE: UC-9 - Xem thư viện cá nhân
+     * OWNER: Táº¡ VÄƒn Huy
+     * USE CASE: UC-9 - Xem thÆ° viá»‡n cĂ¡ nhĂ¢n
      * ACTOR: User
      * FLOW: Basic Flow
-     * PURPOSE: User xem các tài liệu đã lưu trong thư viện cá nhân.
+     * PURPOSE: User xem cĂ¡c tĂ i liá»‡u Ä‘Ă£ lÆ°u trong thÆ° viá»‡n cĂ¡ nhĂ¢n.
      * SEQUENCE NOTE: ConsoleView -> PersonalLibraryController -> PersonalLibraryService -> PersonalLibraryRepository/DocumentRepository -> SessionManager.
      */
     public OperationResult<List<DocumentItem>> viewSavedDocuments() {
         UserAccount user = requireUser();
         if (user == null) {
-            return OperationResult.fail("Chỉ User đã đăng nhập được xem thư viện cá nhân.");
+            return OperationResult.fail("Chá»‰ User Ä‘Ă£ Ä‘Äƒng nháº­p Ä‘Æ°á»£c xem thÆ° viá»‡n cĂ¡ nhĂ¢n.");
         }
-        PersonalLibrary library = personalLibraryRepository.getOrCreate(user.id);
-        List<DocumentItem> documents = library.savedDocumentIds.stream()
+        PersonalLibrary library = personalLibraryRepository.getOrCreate(user.getId());
+        List<DocumentItem> documents = library.getSavedDocumentIds().stream()
                 .map(id -> documentRepository.findById(id).orElse(null))
                 .filter(document -> document != null)
                 .collect(Collectors.toList());
-        return OperationResult.ok("Danh sách tài liệu đã lưu.", documents);
+        return OperationResult.ok("Danh sĂ¡ch tĂ i liá»‡u Ä‘Ă£ lÆ°u.", documents);
     }
 
     /**
-     * OWNER: Tạ Văn Huy
-     * USE CASE: UC-9 - Tạo collection
+     * OWNER: Táº¡ VÄƒn Huy
+     * USE CASE: UC-9 - Táº¡o collection
      * ACTOR: User
      * FLOW: Basic Flow / Exception Flow
-     * PURPOSE: User tạo collection đơn giản PRIVATE/SHARED trong thư viện cá nhân.
+     * PURPOSE: User táº¡o collection Ä‘Æ¡n giáº£n PRIVATE/SHARED trong thÆ° viá»‡n cĂ¡ nhĂ¢n.
      * SEQUENCE NOTE: ConsoleView -> PersonalLibraryController -> PersonalLibraryService -> PersonalLibraryRepository -> SessionManager.
      */
     public OperationResult<Collection> createCollection(String name, CollectionVisibility visibility) {
         UserAccount user = requireUser();
         if (user == null) {
-            return OperationResult.fail("Chỉ User đã đăng nhập được tạo collection.");
+            return OperationResult.fail("Chá»‰ User Ä‘Ă£ Ä‘Äƒng nháº­p Ä‘Æ°á»£c táº¡o collection.");
         }
         if (InputValidator.isBlank(name)) {
-            return OperationResult.fail("Tên collection không được trống.");
+            return OperationResult.fail("TĂªn collection khĂ´ng Ä‘Æ°á»£c trá»‘ng.");
         }
-        Collection collection = new Collection(IdGenerator.nextId("COL"), user.id, name.trim(), visibility);
-        PersonalLibrary library = personalLibraryRepository.getOrCreate(user.id);
-        library.collections.add(collection);
+        Collection collection = new Collection(IdGenerator.nextId("COL"), user.getId(), name.trim(), visibility);
+        PersonalLibrary library = personalLibraryRepository.getOrCreate(user.getId());
+        library.getCollections().add(collection);
         personalLibraryRepository.save(library);
-        return OperationResult.ok("Tạo collection thành công.", collection);
+        return OperationResult.ok("Táº¡o collection thĂ nh cĂ´ng.", collection);
     }
 
     private UserAccount requireUser() {
         UserAccount actor = sessionManager.getCurrentUser().orElse(null);
-        return actor != null && actor.role == Role.USER ? actor : null;
+        return actor != null && actor.getRole() == Role.USER ? actor : null;
     }
 }

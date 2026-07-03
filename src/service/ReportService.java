@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
  * PURPOSE: Tổng hợp số liệu user, tài liệu, request post và ActivityLog cho Admin.
  */
 public class ReportService {
-    private final UserRepository userRepository;
-    private final DocumentRepository documentRepository;
-    private final RequestPostRepository requestPostRepository;
-    private final ActivityLogService activityLogService;
-    private final SessionManager sessionManager;
+    private UserRepository userRepository;
+    private DocumentRepository documentRepository;
+    private RequestPostRepository requestPostRepository;
+    private ActivityLogService activityLogService;
+    private SessionManager sessionManager;
 
     public ReportService(UserRepository userRepository, DocumentRepository documentRepository,
                          RequestPostRepository requestPostRepository, ActivityLogService activityLogService,
@@ -49,17 +49,17 @@ public class ReportService {
      */
     public OperationResult<String> generateReport() {
         UserAccount admin = sessionManager.getCurrentUser().orElse(null);
-        if (admin == null || admin.role != Role.ADMIN) {
+        if (admin == null || admin.getRole() != Role.ADMIN) {
             return OperationResult.fail("Chỉ Admin được xem báo cáo/thống kê.");
         }
 
         List<UserAccount> users = userRepository.findAll();
         List<DocumentItem> documents = documentRepository.findAll();
         List<RequestPost> posts = requestPostRepository.findAll();
-        Map<Role, Long> usersByRole = users.stream().collect(Collectors.groupingBy(user -> user.role, Collectors.counting()));
-        Map<Object, Long> usersByStatus = users.stream().collect(Collectors.groupingBy(user -> user.status, Collectors.counting()));
-        Map<DocumentStatus, Long> documentsByStatus = documents.stream().collect(Collectors.groupingBy(document -> document.status, Collectors.counting()));
-        Map<RequestStatus, Long> postsByStatus = posts.stream().collect(Collectors.groupingBy(post -> post.status, Collectors.counting()));
+        Map<Role, Long> usersByRole = users.stream().collect(Collectors.groupingBy(user -> user.getRole(), Collectors.counting()));
+        Map<Object, Long> usersByStatus = users.stream().collect(Collectors.groupingBy(user -> user.getStatus(), Collectors.counting()));
+        Map<DocumentStatus, Long> documentsByStatus = documents.stream().collect(Collectors.groupingBy(document -> document.getStatus(), Collectors.counting()));
+        Map<RequestStatus, Long> postsByStatus = posts.stream().collect(Collectors.groupingBy(post -> post.getStatus(), Collectors.counting()));
 
         StringBuilder report = new StringBuilder();
         report.append("Tổng số user: ").append(users.size()).append(System.lineSeparator());

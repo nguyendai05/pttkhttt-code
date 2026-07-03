@@ -14,7 +14,7 @@ import java.util.Optional;
  * PURPOSE: Sinh, lưu và truy xuất OTP phục vụ reset mật khẩu.
  */
 public class OtpService {
-    private final OtpRepository otpRepository;
+    private OtpRepository otpRepository;
 
     public OtpService(OtpRepository otpRepository) {
         this.otpRepository = otpRepository;

@@ -13,7 +13,7 @@ import java.util.List;
  * PURPOSE: Điều phối tìm kiếm, xem chi tiết và tải xuống mô phỏng.
  */
 public class DocumentSearchController {
-    private final DocumentSearchService documentSearchService;
+    private DocumentSearchService documentSearchService;
 
     public DocumentSearchController(DocumentSearchService documentSearchService) {
         this.documentSearchService = documentSearchService;

@@ -11,19 +11,19 @@ import java.util.stream.Collectors;
 
 /**
  * OWNER: Team 17
- * FEATURE GROUP: Repository in-memory dùng chung
- * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
+ * FEATURE GROUP: Repository in-memory dĂ¹ng chung
+ * PURPOSE: ThĂ nh pháº§n ná»n táº£ng cá»§a pháº§n 1, phá»¥c vá»¥ mĂ´ phá»ng dá»¯ liá»‡u vĂ  luá»“ng nghiá»‡p vá»¥ á»Ÿ cĂ¡c pháº§n sau.
  */
 public class DocumentRepository {
-    private final List<DocumentItem> documents = new ArrayList<>();
+    private List<DocumentItem> documents = new ArrayList<>();
 
     public void save(DocumentItem document) {
-        findById(document.id).ifPresent(documents::remove);
+        findById(document.getId()).ifPresent(documents::remove);
         documents.add(document);
     }
 
     public Optional<DocumentItem> findById(String id) {
-        return documents.stream().filter(document -> document.id.equalsIgnoreCase(id)).findFirst();
+        return documents.stream().filter(document -> document.getId().equalsIgnoreCase(id)).findFirst();
     }
 
     public List<DocumentItem> findAll() {
@@ -31,23 +31,23 @@ public class DocumentRepository {
     }
 
     public List<DocumentItem> findByStatus(DocumentStatus status) {
-        return documents.stream().filter(document -> document.status == status).collect(Collectors.toList());
+        return documents.stream().filter(document -> document.getStatus() == status).collect(Collectors.toList());
     }
 
     public List<DocumentItem> findByUploader(String uploaderId) {
-        return documents.stream().filter(document -> document.uploaderId.equals(uploaderId)).collect(Collectors.toList());
+        return documents.stream().filter(document -> document.getUploaderId().equals(uploaderId)).collect(Collectors.toList());
     }
 
     public List<DocumentItem> searchApproved(String keyword) {
         return documents.stream()
-                .filter(document -> document.status == DocumentStatus.APPROVED)
+                .filter(document -> document.getStatus() == DocumentStatus.APPROVED)
                 .filter(document -> document.matches(keyword))
                 .collect(Collectors.toList());
     }
 
     public List<DocumentItem> topDownloaded(int limit) {
         return documents.stream()
-                .sorted(Comparator.comparingInt((DocumentItem document) -> document.downloadCount).reversed())
+                .sorted(Comparator.comparingInt((DocumentItem document) -> document.getDownloadCount()).reversed())
                 .limit(limit)
                 .collect(Collectors.toList());
     }

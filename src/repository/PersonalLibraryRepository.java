@@ -12,10 +12,10 @@ import java.util.Optional;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class PersonalLibraryRepository {
-    private final List<PersonalLibrary> libraries = new ArrayList<>();
+    private List<PersonalLibrary> libraries = new ArrayList<>();
 
     public void save(PersonalLibrary library) {
-        findByUserId(library.userId).ifPresent(libraries::remove);
+        findByUserId(library.getUserId()).ifPresent(libraries::remove);
         libraries.add(library);
     }
 
@@ -30,6 +30,6 @@ public class PersonalLibraryRepository {
     }
 
     public Optional<PersonalLibrary> findByUserId(String userId) {
-        return libraries.stream().filter(library -> library.userId.equals(userId)).findFirst();
+        return libraries.stream().filter(library -> library.getUserId().equals(userId)).findFirst();
     }
 }

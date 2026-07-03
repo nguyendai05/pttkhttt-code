@@ -10,7 +10,7 @@ import util.OperationResult;
  * PURPOSE: Nhận request báo cáo từ ConsoleView và gọi ReportService.
  */
 public class ReportController {
-    private final ReportService reportService;
+    private ReportService reportService;
 
     public ReportController(ReportService reportService) {
         this.reportService = reportService;

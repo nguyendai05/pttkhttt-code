@@ -15,10 +15,10 @@ import java.util.Scanner;
  * PURPOSE: Nhập dữ liệu từ console, in kết quả và gọi controller tương ứng.
  */
 public class AuthConsoleView {
-    private final RegistrationController registrationController;
-    private final AuthController authController;
-    private final PasswordRecoveryController passwordRecoveryController;
-    private final Scanner scanner;
+    private RegistrationController registrationController;
+    private AuthController authController;
+    private PasswordRecoveryController passwordRecoveryController;
+    private Scanner scanner;
 
     public AuthConsoleView(RegistrationController registrationController,
                            AuthController authController,
@@ -63,7 +63,7 @@ public class AuthConsoleView {
         if (!otpResult.isSuccess()) {
             return;
         }
-        System.out.println("OTP mô phỏng gửi email: " + otpResult.getData().otpCode);
+        System.out.println("OTP mô phỏng gửi email: " + otpResult.getData().getOtpCode());
         printResult(passwordRecoveryController.resetPassword(
                 email,
                 prompt("OTP: "),

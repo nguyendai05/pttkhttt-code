@@ -14,8 +14,8 @@ import util.PasswordUtil;
  * PURPOSE: Điều phối yêu cầu OTP và đặt lại mật khẩu khi OTP hợp lệ.
  */
 public class PasswordRecoveryService {
-    private final UserRepository userRepository;
-    private final OtpService otpService;
+    private UserRepository userRepository;
+    private OtpService otpService;
 
     public PasswordRecoveryService(UserRepository userRepository, OtpService otpService) {
         this.userRepository = userRepository;
@@ -35,7 +35,7 @@ public class PasswordRecoveryService {
             return OperationResult.fail("Email không hợp lệ.");
         }
         UserAccount user = userRepository.findByUsernameOrEmail(email.trim()).orElse(null);
-        if (user == null || !user.email.equalsIgnoreCase(email.trim())) {
+        if (user == null || !user.getEmail().equalsIgnoreCase(email.trim())) {
             return OperationResult.fail("Email chưa được đăng ký trong hệ thống.");
         }
         OtpRequest otpRequest = otpService.generateOtp(email.trim());
@@ -62,13 +62,13 @@ public class PasswordRecoveryService {
         if (otpRequest == null) {
             return OperationResult.fail("Chưa có OTP cho email này.");
         }
-        if (otpRequest.used) {
+        if (otpRequest.isUsed()) {
             return OperationResult.fail("OTP đã được sử dụng.");
         }
         if (otpRequest.isExpired()) {
             return OperationResult.fail("OTP đã hết hạn.");
         }
-        if (!otpRequest.otpCode.equals(otpCode)) {
+        if (!otpRequest.getOtpCode().equals(otpCode)) {
             return OperationResult.fail("OTP không đúng.");
         }
 
@@ -76,9 +76,9 @@ public class PasswordRecoveryService {
         if (user == null) {
             return OperationResult.fail("Không tìm thấy tài khoản cần cập nhật mật khẩu.");
         }
-        user.passwordHash = PasswordUtil.hash(newPassword);
+        user.setPasswordHash(PasswordUtil.hash(newPassword));
         userRepository.save(user);
-        otpRequest.used = true;
+        otpRequest.setUsed(true);
         return OperationResult.ok("Cập nhật mật khẩu thành công.", null);
     }
 }

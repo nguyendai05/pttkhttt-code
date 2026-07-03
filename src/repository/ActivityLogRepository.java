@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class ActivityLogRepository {
-    private final List<ActivityLog> logs = new ArrayList<>();
+    private List<ActivityLog> logs = new ArrayList<>();
 
     public void save(ActivityLog log) {
         logs.add(log);
@@ -21,7 +21,7 @@ public class ActivityLogRepository {
 
     public List<ActivityLog> findAll() {
         return logs.stream()
-                .sorted(Comparator.comparing((ActivityLog log) -> log.createdAt).reversed())
+                .sorted(Comparator.comparing((ActivityLog log) -> log.getCreatedAt()).reversed())
                 .collect(Collectors.toList());
     }
 

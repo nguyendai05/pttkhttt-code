@@ -6,9 +6,9 @@ package util;
  * PURPOSE: Chuẩn hóa kết quả trả về từ service/controller cho phần 2.
  */
 public class OperationResult<T> {
-    private final boolean success;
-    private final String message;
-    private final T data;
+    private boolean success;
+    private String message;
+    private T data;
 
     private OperationResult(boolean success, String message, T data) {
         this.success = success;

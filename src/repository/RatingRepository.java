@@ -13,20 +13,20 @@ import java.util.stream.Collectors;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class RatingRepository {
-    private final List<Rating> ratings = new ArrayList<>();
+    private List<Rating> ratings = new ArrayList<>();
 
     public void save(Rating rating) {
-        findByDocumentAndUser(rating.documentId, rating.userId).ifPresent(ratings::remove);
+        findByDocumentAndUser(rating.getDocumentId(), rating.getUserId()).ifPresent(ratings::remove);
         ratings.add(rating);
     }
 
     public Optional<Rating> findByDocumentAndUser(String documentId, String userId) {
         return ratings.stream()
-                .filter(rating -> rating.documentId.equals(documentId) && rating.userId.equals(userId))
+                .filter(rating -> rating.getDocumentId().equals(documentId) && rating.getUserId().equals(userId))
                 .findFirst();
     }
 
     public List<Rating> findByDocument(String documentId) {
-        return ratings.stream().filter(rating -> rating.documentId.equals(documentId)).collect(Collectors.toList());
+        return ratings.stream().filter(rating -> rating.getDocumentId().equals(documentId)).collect(Collectors.toList());
     }
 }

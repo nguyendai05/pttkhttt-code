@@ -17,7 +17,7 @@ import java.util.List;
  * PURPOSE: Nhận request profile/library từ ConsoleView và gọi PersonalLibraryService.
  */
 public class PersonalLibraryController {
-    private final PersonalLibraryService personalLibraryService;
+    private PersonalLibraryService personalLibraryService;
 
     public PersonalLibraryController(PersonalLibraryService personalLibraryService) {
         this.personalLibraryService = personalLibraryService;

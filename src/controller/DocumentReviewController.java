@@ -13,7 +13,7 @@ import java.util.List;
  * PURPOSE: Điều phối xem pending document, approve và reject.
  */
 public class DocumentReviewController {
-    private final DocumentReviewService documentReviewService;
+    private DocumentReviewService documentReviewService;
 
     public DocumentReviewController(DocumentReviewService documentReviewService) {
         this.documentReviewService = documentReviewService;

@@ -46,50 +46,198 @@ import view.DocumentConsoleView;
  * PURPOSE: Gom repository in-memory và wiring controller/service cho các phần 2, 3, 4.
  */
 public class AppContext {
-    public final UserRepository userRepository = new UserRepository();
-    public final ProfileRepository profileRepository = new ProfileRepository();
-    public final DocumentRepository documentRepository = new DocumentRepository();
-    public final CommentRepository commentRepository = new CommentRepository();
-    public final RatingRepository ratingRepository = new RatingRepository();
-    public final PersonalLibraryRepository personalLibraryRepository = new PersonalLibraryRepository();
-    public final RequestPostRepository requestPostRepository = new RequestPostRepository();
-    public final ActivityLogRepository activityLogRepository = new ActivityLogRepository();
-    public final OtpRepository otpRepository = new OtpRepository();
+    private UserRepository userRepository = new UserRepository();
+    private ProfileRepository profileRepository = new ProfileRepository();
+    private DocumentRepository documentRepository = new DocumentRepository();
+    private CommentRepository commentRepository = new CommentRepository();
+    private RatingRepository ratingRepository = new RatingRepository();
+    private PersonalLibraryRepository personalLibraryRepository = new PersonalLibraryRepository();
+    private RequestPostRepository requestPostRepository = new RequestPostRepository();
+    private ActivityLogRepository activityLogRepository = new ActivityLogRepository();
+    private OtpRepository otpRepository = new OtpRepository();
 
-    public final SessionManager sessionManager = new SessionManager();
-    public final ActivityLogService activityLogService = new ActivityLogService(activityLogRepository);
+    private SessionManager sessionManager = new SessionManager();
+    private ActivityLogService activityLogService = new ActivityLogService(activityLogRepository);
 
-    public final RegistrationService registrationService = new RegistrationService(userRepository, profileRepository);
-    public final AuthService authService = new AuthService(userRepository, activityLogRepository, sessionManager);
-    public final OtpService otpService = new OtpService(otpRepository);
-    public final PasswordRecoveryService passwordRecoveryService = new PasswordRecoveryService(userRepository, otpService);
+    private RegistrationService registrationService = new RegistrationService(userRepository, profileRepository);
+    private AuthService authService = new AuthService(userRepository, activityLogRepository, sessionManager);
+    private OtpService otpService = new OtpService(otpRepository);
+    private PasswordRecoveryService passwordRecoveryService = new PasswordRecoveryService(userRepository, otpService);
 
-    public final DocumentUploadService documentUploadService = new DocumentUploadService(documentRepository, sessionManager);
-    public final DocumentReviewService documentReviewService = new DocumentReviewService(documentRepository, activityLogRepository, sessionManager);
-    public final DocumentSearchService documentSearchService = new DocumentSearchService(documentRepository, sessionManager);
-    public final RatingService ratingService = new RatingService(ratingRepository, documentRepository, sessionManager);
-    public final CommentService commentService = new CommentService(commentRepository, documentRepository, activityLogRepository, sessionManager);
+    private DocumentUploadService documentUploadService = new DocumentUploadService(documentRepository, sessionManager);
+    private DocumentReviewService documentReviewService = new DocumentReviewService(documentRepository, activityLogRepository, sessionManager);
+    private DocumentSearchService documentSearchService = new DocumentSearchService(documentRepository, sessionManager);
+    private RatingService ratingService = new RatingService(ratingRepository, documentRepository, sessionManager);
+    private CommentService commentService = new CommentService(commentRepository, documentRepository, activityLogRepository, sessionManager);
 
-    public final UserManagementService userManagementService = new UserManagementService(userRepository, sessionManager, activityLogService);
-    public final ReportService reportService = new ReportService(userRepository, documentRepository, requestPostRepository, activityLogService, sessionManager);
-    public final PersonalLibraryService personalLibraryService = new PersonalLibraryService(profileRepository, documentRepository, personalLibraryRepository, sessionManager);
-    public final RequestPostService requestPostService = new RequestPostService(requestPostRepository, documentRepository, commentRepository, activityLogService, sessionManager);
-    public final ForumModerationService forumModerationService = new ForumModerationService(requestPostRepository, commentRepository, activityLogRepository, sessionManager);
+    private UserManagementService userManagementService = new UserManagementService(userRepository, sessionManager, activityLogService);
+    private ReportService reportService = new ReportService(userRepository, documentRepository, requestPostRepository, activityLogService, sessionManager);
+    private PersonalLibraryService personalLibraryService = new PersonalLibraryService(profileRepository, documentRepository, personalLibraryRepository, sessionManager);
+    private RequestPostService requestPostService = new RequestPostService(requestPostRepository, documentRepository, commentRepository, activityLogService, sessionManager);
+    private ForumModerationService forumModerationService = new ForumModerationService(requestPostRepository, commentRepository, activityLogRepository, sessionManager);
 
-    public final RegistrationController registrationController = new RegistrationController(registrationService);
-    public final AuthController authController = new AuthController(authService);
-    public final PasswordRecoveryController passwordRecoveryController = new PasswordRecoveryController(passwordRecoveryService);
+    private RegistrationController registrationController = new RegistrationController(registrationService);
+    private AuthController authController = new AuthController(authService);
+    private PasswordRecoveryController passwordRecoveryController = new PasswordRecoveryController(passwordRecoveryService);
 
-    public final DocumentUploadController documentUploadController = new DocumentUploadController(documentUploadService);
-    public final DocumentReviewController documentReviewController = new DocumentReviewController(documentReviewService);
-    public final DocumentSearchController documentSearchController = new DocumentSearchController(documentSearchService);
-    public final DocumentInteractionController documentInteractionController = new DocumentInteractionController(commentService, ratingService);
+    private DocumentUploadController documentUploadController = new DocumentUploadController(documentUploadService);
+    private DocumentReviewController documentReviewController = new DocumentReviewController(documentReviewService);
+    private DocumentSearchController documentSearchController = new DocumentSearchController(documentSearchService);
+    private DocumentInteractionController documentInteractionController = new DocumentInteractionController(commentService, ratingService);
 
-    public final UserManagementController userManagementController = new UserManagementController(userManagementService);
-    public final ReportController reportController = new ReportController(reportService);
-    public final PersonalLibraryController personalLibraryController = new PersonalLibraryController(personalLibraryService);
-    public final RequestPostController requestPostController = new RequestPostController(requestPostService);
-    public final ForumModerationController forumModerationController = new ForumModerationController(forumModerationService);
+    private UserManagementController userManagementController = new UserManagementController(userManagementService);
+    private ReportController reportController = new ReportController(reportService);
+    private PersonalLibraryController personalLibraryController = new PersonalLibraryController(personalLibraryService);
+    private RequestPostController requestPostController = new RequestPostController(requestPostService);
+    private ForumModerationController forumModerationController = new ForumModerationController(forumModerationService);
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public ProfileRepository getProfileRepository() {
+        return profileRepository;
+    }
+
+    public DocumentRepository getDocumentRepository() {
+        return documentRepository;
+    }
+
+    public CommentRepository getCommentRepository() {
+        return commentRepository;
+    }
+
+    public RatingRepository getRatingRepository() {
+        return ratingRepository;
+    }
+
+    public PersonalLibraryRepository getPersonalLibraryRepository() {
+        return personalLibraryRepository;
+    }
+
+    public RequestPostRepository getRequestPostRepository() {
+        return requestPostRepository;
+    }
+
+    public ActivityLogRepository getActivityLogRepository() {
+        return activityLogRepository;
+    }
+
+    public OtpRepository getOtpRepository() {
+        return otpRepository;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public ActivityLogService getActivityLogService() {
+        return activityLogService;
+    }
+
+    public RegistrationService getRegistrationService() {
+        return registrationService;
+    }
+
+    public AuthService getAuthService() {
+        return authService;
+    }
+
+    public OtpService getOtpService() {
+        return otpService;
+    }
+
+    public PasswordRecoveryService getPasswordRecoveryService() {
+        return passwordRecoveryService;
+    }
+
+    public DocumentUploadService getDocumentUploadService() {
+        return documentUploadService;
+    }
+
+    public DocumentReviewService getDocumentReviewService() {
+        return documentReviewService;
+    }
+
+    public DocumentSearchService getDocumentSearchService() {
+        return documentSearchService;
+    }
+
+    public RatingService getRatingService() {
+        return ratingService;
+    }
+
+    public CommentService getCommentService() {
+        return commentService;
+    }
+
+    public UserManagementService getUserManagementService() {
+        return userManagementService;
+    }
+
+    public ReportService getReportService() {
+        return reportService;
+    }
+
+    public PersonalLibraryService getPersonalLibraryService() {
+        return personalLibraryService;
+    }
+
+    public RequestPostService getRequestPostService() {
+        return requestPostService;
+    }
+
+    public ForumModerationService getForumModerationService() {
+        return forumModerationService;
+    }
+
+    public RegistrationController getRegistrationController() {
+        return registrationController;
+    }
+
+    public AuthController getAuthController() {
+        return authController;
+    }
+
+    public PasswordRecoveryController getPasswordRecoveryController() {
+        return passwordRecoveryController;
+    }
+
+    public DocumentUploadController getDocumentUploadController() {
+        return documentUploadController;
+    }
+
+    public DocumentReviewController getDocumentReviewController() {
+        return documentReviewController;
+    }
+
+    public DocumentSearchController getDocumentSearchController() {
+        return documentSearchController;
+    }
+
+    public DocumentInteractionController getDocumentInteractionController() {
+        return documentInteractionController;
+    }
+
+    public UserManagementController getUserManagementController() {
+        return userManagementController;
+    }
+
+    public ReportController getReportController() {
+        return reportController;
+    }
+
+    public PersonalLibraryController getPersonalLibraryController() {
+        return personalLibraryController;
+    }
+
+    public RequestPostController getRequestPostController() {
+        return requestPostController;
+    }
+
+    public ForumModerationController getForumModerationController() {
+        return forumModerationController;
+    }
 
     public AuthConsoleView createAuthConsoleView() {
         return new AuthConsoleView(registrationController, authController, passwordRecoveryController);

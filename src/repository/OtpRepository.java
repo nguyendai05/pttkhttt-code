@@ -12,10 +12,10 @@ import java.util.Optional;
  * PURPOSE: Thành phần nền tảng của phần 1, phục vụ mô phỏng dữ liệu và luồng nghiệp vụ ở các phần sau.
  */
 public class OtpRepository {
-    private final Map<String, OtpRequest> otpByEmail = new HashMap<>();
+    private Map<String, OtpRequest> otpByEmail = new HashMap<>();
 
     public void save(OtpRequest otpRequest) {
-        otpByEmail.put(otpRequest.email.toLowerCase(), otpRequest);
+        otpByEmail.put(otpRequest.getEmail().toLowerCase(), otpRequest);
     }
 
     public Optional<OtpRequest> findByEmail(String email) {

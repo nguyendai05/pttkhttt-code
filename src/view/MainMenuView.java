@@ -17,8 +17,8 @@ import java.util.Scanner;
  * PURPOSE: Điều phối menu console theo trạng thái đăng nhập và role hiện tại.
  */
 public class MainMenuView {
-    private final AppContext context;
-    private final Scanner scanner = new Scanner(System.in, "UTF-8");
+    private AppContext context;
+    private Scanner scanner = new Scanner(System.in, "UTF-8");
     private boolean running = true;
 
     public MainMenuView(AppContext context) {
@@ -35,18 +35,18 @@ public class MainMenuView {
      */
     public void start() {
         while (running) {
-            UserAccount currentUser = context.sessionManager.getCurrentUser().orElse(null);
+            UserAccount currentUser = context.getSessionManager().getCurrentUser().orElse(null);
             if (currentUser == null) {
                 showGuestMenu();
-            } else if (currentUser.role == Role.USER) {
+            } else if (currentUser.getRole() == Role.USER) {
                 showUserMenu();
-            } else if (currentUser.role == Role.MODERATOR) {
+            } else if (currentUser.getRole() == Role.MODERATOR) {
                 showModeratorMenu();
-            } else if (currentUser.role == Role.ADMIN) {
+            } else if (currentUser.getRole() == Role.ADMIN) {
                 showAdminMenu();
             } else {
                 printLine("Role không hợp lệ, tự động đăng xuất.");
-                context.authController.logout();
+                context.getAuthController().logout();
             }
         }
         printLine("Đã thoát chương trình.");
@@ -109,7 +109,7 @@ public class MainMenuView {
                 myRequestPosts();
                 break;
             case 0:
-                printResult(context.authController.logout());
+                printResult(context.getAuthController().logout());
                 break;
             default:
                 printLine("Lựa chọn không hợp lệ.");
@@ -137,7 +137,7 @@ public class MainMenuView {
                 viewUsers();
                 break;
             case 0:
-                printResult(context.authController.logout());
+                printResult(context.getAuthController().logout());
                 break;
             default:
                 printLine("Lựa chọn không hợp lệ.");
@@ -159,13 +159,13 @@ public class MainMenuView {
                 reviewRequestPosts();
                 break;
             case 3:
-                printResult(context.reportController.generateReport());
+                printResult(context.getReportController().generateReport());
                 break;
             case 4:
-                context.activityLogService.recentLogs(20).forEach(System.out::println);
+                context.getActivityLogService().recentLogs(20).forEach(System.out::println);
                 break;
             case 0:
-                printResult(context.authController.logout());
+                printResult(context.getAuthController().logout());
                 break;
             default:
                 printLine("Lựa chọn không hợp lệ.");
@@ -174,7 +174,7 @@ public class MainMenuView {
 
     private void register() {
         printLine("\n--- UC-1 Đăng ký ---");
-        printResult(context.registrationController.register(
+        printResult(context.getRegistrationController().register(
                 prompt("Username: "),
                 prompt("Email: "),
                 prompt("Password: "),
@@ -184,22 +184,22 @@ public class MainMenuView {
 
     private void login() {
         printLine("\n--- UC-3 Đăng nhập ---");
-        printResult(context.authController.login(prompt("Username/email: "), prompt("Password: ")));
+        printResult(context.getAuthController().login(prompt("Username/email: "), prompt("Password: ")));
     }
 
     private void recoverPassword() {
         printLine("\n--- UC-2 Quên mật khẩu ---");
         String email = prompt("Email: ");
-        OperationResult<?> otpResult = context.passwordRecoveryController.requestOtp(email);
+        OperationResult<?> otpResult = context.getPasswordRecoveryController().requestOtp(email);
         printResult(otpResult);
         if (!otpResult.isSuccess()) {
             return;
         }
         Object data = otpResult.getData();
         if (data instanceof model.OtpRequest) {
-            printLine("OTP mô phỏng gửi email: " + ((model.OtpRequest) data).otpCode);
+            printLine("OTP mô phỏng gửi email: " + ((model.OtpRequest) data).getOtpCode());
         }
-        printResult(context.passwordRecoveryController.resetPassword(
+        printResult(context.getPasswordRecoveryController().resetPassword(
                 email,
                 prompt("OTP: "),
                 prompt("Password mới: "),
@@ -209,7 +209,7 @@ public class MainMenuView {
 
     private void uploadDocument() {
         printLine("\n--- UC-5a Tải lên tài liệu ---");
-        printResult(context.documentUploadController.upload(
+        printResult(context.getDocumentUploadController().upload(
                 prompt("File name (pdf/docx/pptx/txt): "),
                 prompt("Title: "),
                 prompt("Description: "),
@@ -223,16 +223,16 @@ public class MainMenuView {
 
     private void reviewDocuments() {
         printLine("\n--- UC-5b Kiểm duyệt tài liệu ---");
-        printResult(context.documentReviewController.getPendingDocuments());
+        printResult(context.getDocumentReviewController().getPendingDocuments());
         String documentId = prompt("Document ID cần xử lý (Enter để bỏ qua): ");
         if (documentId.trim().isEmpty()) {
             return;
         }
         String action = prompt("A=approve, R=reject: ");
         if ("A".equalsIgnoreCase(action)) {
-            printResult(context.documentReviewController.approve(documentId));
+            printResult(context.getDocumentReviewController().approve(documentId));
         } else if ("R".equalsIgnoreCase(action)) {
-            printResult(context.documentReviewController.reject(documentId, prompt("Lý do từ chối: ")));
+            printResult(context.getDocumentReviewController().reject(documentId, prompt("Lý do từ chối: ")));
         } else {
             printLine("Hành động không hợp lệ.");
         }
@@ -240,17 +240,17 @@ public class MainMenuView {
 
     private void searchDocuments() {
         printLine("\n--- UC-6 Tra cứu tài liệu ---");
-        printResult(context.documentSearchController.searchApproved(prompt("Từ khóa: ")));
-        if (!context.sessionManager.isLoggedIn()) {
+        printResult(context.getDocumentSearchController().searchApproved(prompt("Từ khóa: ")));
+        if (!context.getSessionManager().isLoggedIn()) {
             return;
         }
         String documentId = prompt("Document ID để xem chi tiết/tải xuống (Enter để bỏ qua): ");
         if (documentId.trim().isEmpty()) {
             return;
         }
-        printResult(context.documentSearchController.viewDetail(documentId));
+        printResult(context.getDocumentSearchController().viewDetail(documentId));
         if ("Y".equalsIgnoreCase(prompt("Tải xuống mô phỏng? (Y/N): "))) {
-            printResult(context.documentSearchController.download(documentId));
+            printResult(context.getDocumentSearchController().download(documentId));
         }
     }
 
@@ -264,19 +264,19 @@ public class MainMenuView {
         printLine("5. Xóa bình luận của tôi");
         switch (readInt("Chọn: ")) {
             case 1:
-                printResult(context.documentInteractionController.addComment(documentId, prompt("Nội dung: ")));
+                printResult(context.getDocumentInteractionController().addComment(documentId, prompt("Nội dung: ")));
                 break;
             case 2:
-                printResult(context.documentInteractionController.rateDocument(documentId, readInt("Điểm: ")));
+                printResult(context.getDocumentInteractionController().rateDocument(documentId, readInt("Điểm: ")));
                 break;
             case 3:
-                printResult(context.documentInteractionController.getDocumentComments(documentId));
+                printResult(context.getDocumentInteractionController().getDocumentComments(documentId));
                 break;
             case 4:
-                printResult(context.documentInteractionController.updateOwnComment(prompt("Comment ID: "), prompt("Nội dung mới: ")));
+                printResult(context.getDocumentInteractionController().updateOwnComment(prompt("Comment ID: "), prompt("Nội dung mới: ")));
                 break;
             case 5:
-                printResult(context.documentInteractionController.deleteOwnComment(prompt("Comment ID: ")));
+                printResult(context.getDocumentInteractionController().deleteOwnComment(prompt("Comment ID: ")));
                 break;
             default:
                 printLine("Lựa chọn không hợp lệ.");
@@ -293,22 +293,22 @@ public class MainMenuView {
         printLine("6. Tạo collection");
         switch (readInt("Chọn: ")) {
             case 1:
-                printResult(context.personalLibraryController.viewProfile());
+                printResult(context.getPersonalLibraryController().viewProfile());
                 break;
             case 2:
-                printResult(context.personalLibraryController.updateProfile(prompt("Full name: "), prompt("Bio: ")));
+                printResult(context.getPersonalLibraryController().updateProfile(prompt("Full name: "), prompt("Bio: ")));
                 break;
             case 3:
-                printResult(context.personalLibraryController.myUploadedDocuments());
+                printResult(context.getPersonalLibraryController().myUploadedDocuments());
                 break;
             case 4:
-                printResult(context.personalLibraryController.saveApprovedDocument(prompt("Document ID: ")));
+                printResult(context.getPersonalLibraryController().saveApprovedDocument(prompt("Document ID: ")));
                 break;
             case 5:
-                printResult(context.personalLibraryController.viewSavedDocuments());
+                printResult(context.getPersonalLibraryController().viewSavedDocuments());
                 break;
             case 6:
-                printResult(context.personalLibraryController.createCollection(prompt("Tên collection: "), parseVisibility(prompt("PRIVATE/SHARED: "))));
+                printResult(context.getPersonalLibraryController().createCollection(prompt("Tên collection: "), parseVisibility(prompt("PRIVATE/SHARED: "))));
                 break;
             default:
                 printLine("Lựa chọn không hợp lệ.");
@@ -317,12 +317,12 @@ public class MainMenuView {
 
     private void createRequestPost() {
         printLine("\n--- UC-10a Tạo bài yêu cầu tài liệu ---");
-        printResult(context.requestPostController.createPost(prompt("Title: "), prompt("Content: ")));
+        printResult(context.getRequestPostController().createPost(prompt("Title: "), prompt("Content: ")));
     }
 
     private void myRequestPosts() {
         printLine("\n--- UC-10a Bài yêu cầu của tôi ---");
-        printResult(context.requestPostController.myPosts());
+        printResult(context.getRequestPostController().myPosts());
         printLine("1. Sửa bài");
         printLine("2. Xóa bài");
         printLine("3. Bình luận vào bài OPEN");
@@ -330,16 +330,16 @@ public class MainMenuView {
         printLine("0. Quay lại");
         switch (readInt("Chọn: ")) {
             case 1:
-                printResult(context.requestPostController.updateOwnPost(prompt("Request ID: "), prompt("Title mới: "), prompt("Content mới: ")));
+                printResult(context.getRequestPostController().updateOwnPost(prompt("Request ID: "), prompt("Title mới: "), prompt("Content mới: ")));
                 break;
             case 2:
-                printResult(context.requestPostController.deleteOwnPost(prompt("Request ID: ")));
+                printResult(context.getRequestPostController().deleteOwnPost(prompt("Request ID: ")));
                 break;
             case 3:
-                printResult(context.requestPostController.commentOpenPost(prompt("Request ID: "), prompt("Nội dung bình luận: ")));
+                printResult(context.getRequestPostController().commentOpenPost(prompt("Request ID: "), prompt("Nội dung bình luận: ")));
                 break;
             case 4:
-                printResult(context.requestPostController.markFulfilled(prompt("Request ID: "), prompt("Linked documentId (có thể bỏ trống): ")));
+                printResult(context.getRequestPostController().markFulfilled(prompt("Request ID: "), prompt("Linked documentId (có thể bỏ trống): ")));
                 break;
             case 0:
                 break;
@@ -361,7 +361,7 @@ public class MainMenuView {
                     printLine("Role không hợp lệ.");
                     return;
                 }
-                printResult(context.userManagementController.changeRole(prompt("User ID: "), role));
+                printResult(context.getUserManagementController().changeRole(prompt("User ID: "), role));
                 break;
             case 2:
                 AccountStatus status = parseStatus(prompt("Status mới ACTIVE/LOCKED: "));
@@ -369,7 +369,7 @@ public class MainMenuView {
                     printLine("Status không hợp lệ.");
                     return;
                 }
-                printResult(context.userManagementController.changeStatus(prompt("User ID: "), status));
+                printResult(context.getUserManagementController().changeStatus(prompt("User ID: "), status));
                 break;
             case 0:
                 break;
@@ -380,12 +380,12 @@ public class MainMenuView {
 
     private void viewUsers() {
         String keyword = prompt("Từ khóa user (Enter để bỏ qua): ");
-        printResult(context.userManagementController.searchUsers(keyword, null, null));
+        printResult(context.getUserManagementController().searchUsers(keyword, null, null));
     }
 
     private void reviewRequestPosts() {
         printLine("\n--- UC-10b Duyệt bài yêu cầu tài liệu ---");
-        OperationResult<?> pendingResult = context.requestPostController.pendingPosts();
+        OperationResult<?> pendingResult = context.getRequestPostController().pendingPosts();
         printResult(pendingResult);
         if (!pendingResult.isSuccess()) {
             return;
@@ -396,9 +396,9 @@ public class MainMenuView {
         }
         String action = prompt("A=approve, R=reject: ");
         if ("A".equalsIgnoreCase(action)) {
-            printResult(context.requestPostController.approvePost(postId));
+            printResult(context.getRequestPostController().approvePost(postId));
         } else if ("R".equalsIgnoreCase(action)) {
-            printResult(context.requestPostController.rejectPost(postId, prompt("Lý do từ chối: ")));
+            printResult(context.getRequestPostController().rejectPost(postId, prompt("Lý do từ chối: ")));
         } else {
             printLine("Hành động không hợp lệ.");
         }
@@ -406,23 +406,23 @@ public class MainMenuView {
 
     private void moderateForum() {
         printLine("\n--- UC-10c Kiểm soát nội dung forum ---");
-        printResult(context.forumModerationController.viewForumContent());
+        printResult(context.getForumModerationController().viewForumContent());
         printLine("1. Ẩn bài viết");
         printLine("2. Xóa bài viết");
         printLine("3. Ẩn bình luận");
         printLine("4. Xóa bình luận");
         switch (readInt("Chọn: ")) {
             case 1:
-                printResult(context.forumModerationController.moderatePost(prompt("Request ID: "), false, prompt("Lý do: ")));
+                printResult(context.getForumModerationController().moderatePost(prompt("Request ID: "), false, prompt("Lý do: ")));
                 break;
             case 2:
-                printResult(context.forumModerationController.moderatePost(prompt("Request ID: "), true, prompt("Lý do: ")));
+                printResult(context.getForumModerationController().moderatePost(prompt("Request ID: "), true, prompt("Lý do: ")));
                 break;
             case 3:
-                printResult(context.forumModerationController.moderateComment(prompt("Comment ID: "), false, prompt("Lý do: ")));
+                printResult(context.getForumModerationController().moderateComment(prompt("Comment ID: "), false, prompt("Lý do: ")));
                 break;
             case 4:
-                printResult(context.forumModerationController.moderateComment(prompt("Comment ID: "), true, prompt("Lý do: ")));
+                printResult(context.getForumModerationController().moderateComment(prompt("Comment ID: "), true, prompt("Lý do: ")));
                 break;
             default:
                 printLine("Lựa chọn không hợp lệ.");

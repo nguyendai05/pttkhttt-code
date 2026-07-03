@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
  * PURPOSE: Xác thực username/email, password, trạng thái tài khoản và cập nhật session.
  */
 public class AuthService {
-    private final UserRepository userRepository;
-    private final ActivityLogRepository activityLogRepository;
-    private final SessionManager sessionManager;
+    private UserRepository userRepository;
+    private ActivityLogRepository activityLogRepository;
+    private SessionManager sessionManager;
 
     public AuthService(UserRepository userRepository, ActivityLogRepository activityLogRepository, SessionManager sessionManager) {
         this.userRepository = userRepository;
@@ -45,25 +45,25 @@ public class AuthService {
         if (user == null) {
             return OperationResult.fail("Tài khoản không tồn tại.");
         }
-        if (!PasswordUtil.matches(password, user.passwordHash)) {
+        if (!PasswordUtil.matches(password, user.getPasswordHash())) {
             return OperationResult.fail("Password không đúng.");
         }
-        if (user.status != AccountStatus.ACTIVE) {
+        if (user.getStatus() != AccountStatus.ACTIVE) {
             return OperationResult.fail("Tài khoản không ở trạng thái ACTIVE.");
         }
 
-        user.lastLoginAt = LocalDateTime.now();
+        user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
         sessionManager.login(user);
         activityLogRepository.save(new ActivityLog(
                 IdGenerator.nextId("LOG"),
-                user.id,
+                user.getId(),
                 "LOGIN",
                 "USER",
-                user.id,
+                user.getId(),
                 "Đăng nhập thành công bằng username/email"
         ));
-        return OperationResult.ok("Đăng nhập thành công: " + user.username + " (" + user.role + ").", user);
+        return OperationResult.ok("Đăng nhập thành công: " + user.getUsername() + " (" + user.getRole() + ").", user);
     }
 
     /**

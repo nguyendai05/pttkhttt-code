@@ -11,7 +11,7 @@ import util.OperationResult;
  * PURPOSE: Nhận request đăng ký từ ConsoleView và chuyển cho RegistrationService.
  */
 public class RegistrationController {
-    private final RegistrationService registrationService;
+    private RegistrationService registrationService;
 
     public RegistrationController(RegistrationService registrationService) {
         this.registrationService = registrationService;

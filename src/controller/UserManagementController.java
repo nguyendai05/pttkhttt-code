@@ -15,7 +15,7 @@ import java.util.List;
  * PURPOSE: Nhận request quản trị user từ ConsoleView và gọi UserManagementService.
  */
 public class UserManagementController {
-    private final UserManagementService userManagementService;
+    private UserManagementService userManagementService;
 
     public UserManagementController(UserManagementService userManagementService) {
         this.userManagementService = userManagementService;

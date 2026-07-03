@@ -15,8 +15,8 @@ import java.util.List;
  * PURPOSE: Tìm kiếm tài liệu APPROVED và mô phỏng tải xuống.
  */
 public class DocumentSearchService {
-    private final DocumentRepository documentRepository;
-    private final SessionManager sessionManager;
+    private DocumentRepository documentRepository;
+    private SessionManager sessionManager;
 
     public DocumentSearchService(DocumentRepository documentRepository, SessionManager sessionManager) {
         this.documentRepository = documentRepository;
@@ -49,7 +49,7 @@ public class DocumentSearchService {
             return OperationResult.fail("Guest chỉ được xem thông tin cơ bản từ kết quả tìm kiếm.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.APPROVED) {
+        if (document == null || document.getStatus() != DocumentStatus.APPROVED) {
             return OperationResult.fail("Không tìm thấy tài liệu APPROVED.");
         }
         return OperationResult.ok("Chi tiết tài liệu APPROVED.", document);
@@ -69,10 +69,10 @@ public class DocumentSearchService {
             return OperationResult.fail("Guest không được tải xuống tài liệu.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.APPROVED) {
+        if (document == null || document.getStatus() != DocumentStatus.APPROVED) {
             return OperationResult.fail("Không tìm thấy tài liệu APPROVED để tải xuống.");
         }
-        document.downloadCount++;
+        document.setDownloadCount(document.getDownloadCount() + 1);
         documentRepository.save(document);
         return OperationResult.ok("Tải xuống mô phỏng thành công. downloadCount đã tăng.", document);
     }

@@ -22,10 +22,10 @@ import java.util.List;
  * PURPOSE: Quản lý comment tài liệu, sửa/xóa comment của chính mình và kiểm duyệt comment vi phạm.
  */
 public class CommentService {
-    private final CommentRepository commentRepository;
-    private final DocumentRepository documentRepository;
-    private final ActivityLogRepository activityLogRepository;
-    private final SessionManager sessionManager;
+    private CommentRepository commentRepository;
+    private DocumentRepository documentRepository;
+    private ActivityLogRepository activityLogRepository;
+    private SessionManager sessionManager;
 
     public CommentService(CommentRepository commentRepository, DocumentRepository documentRepository,
                           ActivityLogRepository activityLogRepository, SessionManager sessionManager) {
@@ -45,17 +45,17 @@ public class CommentService {
      */
     public OperationResult<Comment> addComment(String documentId, String content) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
-        if (user == null || user.role != Role.USER) {
+        if (user == null || user.getRole() != Role.USER) {
             return OperationResult.fail("Chỉ User đã đăng nhập được bình luận tài liệu.");
         }
         DocumentItem document = documentRepository.findById(documentId).orElse(null);
-        if (document == null || document.status != DocumentStatus.APPROVED) {
+        if (document == null || document.getStatus() != DocumentStatus.APPROVED) {
             return OperationResult.fail("Chỉ được bình luận vào tài liệu APPROVED.");
         }
         if (InputValidator.isBlank(content)) {
             return OperationResult.fail("Nội dung bình luận không được trống.");
         }
-        Comment comment = new Comment(IdGenerator.nextId("COM"), user.id, "DOCUMENT", documentId, content.trim());
+        Comment comment = new Comment(IdGenerator.nextId("COM"), user.getId(), "DOCUMENT", documentId, content.trim());
         commentRepository.save(comment);
         return OperationResult.ok("Bình luận tài liệu thành công.", comment);
     }
@@ -83,13 +83,13 @@ public class CommentService {
     public OperationResult<Comment> updateOwnComment(String commentId, String newContent) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
         Comment comment = commentRepository.findById(commentId).orElse(null);
-        if (user == null || comment == null || !comment.userId.equals(user.id)) {
+        if (user == null || comment == null || !comment.getUserId().equals(user.getId())) {
             return OperationResult.fail("Chỉ chủ bình luận được sửa bình luận này.");
         }
         if (InputValidator.isBlank(newContent)) {
             return OperationResult.fail("Nội dung mới không được trống.");
         }
-        comment.content = newContent.trim();
+        comment.setContent(newContent.trim());
         commentRepository.save(comment);
         return OperationResult.ok("Sửa bình luận thành công.", comment);
     }
@@ -105,10 +105,10 @@ public class CommentService {
     public OperationResult<Comment> deleteOwnComment(String commentId) {
         UserAccount user = sessionManager.getCurrentUser().orElse(null);
         Comment comment = commentRepository.findById(commentId).orElse(null);
-        if (user == null || comment == null || !comment.userId.equals(user.id)) {
+        if (user == null || comment == null || !comment.getUserId().equals(user.getId())) {
             return OperationResult.fail("Chỉ chủ bình luận được xóa bình luận này.");
         }
-        comment.deleted = true;
+        comment.setDeleted(true);
         commentRepository.save(comment);
         return OperationResult.ok("Xóa bình luận thành công.", comment);
     }
@@ -123,7 +123,7 @@ public class CommentService {
      */
     public OperationResult<Comment> moderateComment(String commentId, boolean delete, String reason) {
         UserAccount actor = sessionManager.getCurrentUser().orElse(null);
-        if (actor == null || (actor.role != Role.MODERATOR && actor.role != Role.ADMIN)) {
+        if (actor == null || (actor.getRole() != Role.MODERATOR && actor.getRole() != Role.ADMIN)) {
             return OperationResult.fail("Chỉ Moderator/Admin được ẩn hoặc xóa bình luận vi phạm.");
         }
         if (InputValidator.isBlank(reason)) {
@@ -133,15 +133,15 @@ public class CommentService {
         if (comment == null) {
             return OperationResult.fail("Không tìm thấy bình luận cần xử lý.");
         }
-        comment.moderationReason = reason.trim();
+        comment.setModerationReason(reason.trim());
         if (delete) {
-            comment.deleted = true;
+            comment.setDeleted(true);
         } else {
-            comment.hidden = true;
+            comment.setHidden(true);
         }
         commentRepository.save(comment);
-        activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), actor.id,
-                delete ? "DELETE_COMMENT" : "HIDE_COMMENT", "COMMENT", comment.id, reason.trim()));
+        activityLogRepository.save(new ActivityLog(IdGenerator.nextId("LOG"), actor.getId(),
+                delete ? "DELETE_COMMENT" : "HIDE_COMMENT", "COMMENT", comment.getId(), reason.trim()));
         return OperationResult.ok((delete ? "Xóa" : "Ẩn") + " bình luận vi phạm thành công.", comment);
     }
 }

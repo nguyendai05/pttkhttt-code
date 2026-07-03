@@ -14,8 +14,8 @@ import java.util.List;
  * PURPOSE: Điều phối comment, rating, sửa/xóa comment và kiểm duyệt comment.
  */
 public class DocumentInteractionController {
-    private final CommentService commentService;
-    private final RatingService ratingService;
+    private CommentService commentService;
+    private RatingService ratingService;
 
     public DocumentInteractionController(CommentService commentService, RatingService ratingService) {
         this.commentService = commentService;

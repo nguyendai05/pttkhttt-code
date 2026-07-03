@@ -13,7 +13,7 @@ import java.util.List;
  * PURPOSE: Ghi và đọc ActivityLog phục vụ quản trị, báo cáo và kiểm soát nội dung.
  */
 public class ActivityLogService {
-    private final ActivityLogRepository activityLogRepository;
+    private ActivityLogRepository activityLogRepository;
 
     public ActivityLogService(ActivityLogRepository activityLogRepository) {
         this.activityLogRepository = activityLogRepository;
