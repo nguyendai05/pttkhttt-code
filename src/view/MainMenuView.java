@@ -162,7 +162,7 @@ public class MainMenuView {
     }
 
     private void register() {
-        printLine("\n--- UC-1 Đăng ký ---");
+        printLine("\n--- Đăng ký ---");
         printResult(context.getRegistrationController().register(
                 prompt("Username: "),
                 prompt("Email: "),
@@ -172,12 +172,12 @@ public class MainMenuView {
     }
 
     private void login() {
-        printLine("\n--- UC-3 Đăng nhập ---");
+        printLine("\n--- Đăng nhập ---");
         printResult(context.getAuthController().login(prompt("Username/email: "), prompt("Password: ")));
     }
 
     private void recoverPassword() {
-        printLine("\n--- UC-2 Quên mật khẩu ---");
+        printLine("\n--- Quên mật khẩu ---");
         String email = prompt("Email: ");
         OperationResult<?> otpResult = context.getPasswordRecoveryController().requestOtp(email);
         printResult(otpResult);
@@ -197,7 +197,7 @@ public class MainMenuView {
     }
 
     private void uploadDocument() {
-        printLine("\n--- UC-5a Tải lên tài liệu ---");
+        printLine("\n--- Tải lên tài liệu ---");
         printResult(context.getDocumentUploadController().upload(
                 prompt("File name (pdf/docx/pptx/txt): "),
                 prompt("Title: "),
@@ -211,7 +211,7 @@ public class MainMenuView {
     }
 
     private void reviewDocuments() {
-        printLine("\n--- UC-5b Kiểm duyệt tài liệu ---");
+        printLine("\n--- Kiểm duyệt tài liệu ---");
         printResult(context.getDocumentReviewController().getPendingDocuments());
         String documentId = prompt("Document ID cần xử lý (Enter để bỏ qua): ");
         if (documentId.trim().isEmpty()) {
@@ -228,7 +228,7 @@ public class MainMenuView {
     }
 
     private void searchDocuments() {
-        printLine("\n--- UC-6 Tra cứu tài liệu ---");
+        printLine("\n--- Tra cứu tài liệu ---");
         printResult(context.getDocumentSearchController().searchApproved(prompt("Từ khóa: ")));
         if (!context.getSessionManager().isLoggedIn()) {
             return;
@@ -244,7 +244,7 @@ public class MainMenuView {
     }
 
     private void interactWithDocument() {
-        printLine("\n--- UC-7 Bình luận/đánh giá tài liệu ---");
+        printLine("\n--- Bình luận/đánh giá tài liệu ---");
         String documentId = prompt("Document ID: ");
         printLine("1. Thêm bình luận");
         printLine("2. Đánh giá 1-5");
@@ -273,7 +273,7 @@ public class MainMenuView {
     }
 
     private void personalLibraryMenu() {
-        printLine("\n--- UC-9 Thư viện cá nhân ---");
+        printLine("\n--- Thư viện cá nhân ---");
         printLine("1. Xem profile");
         printLine("2. Cập nhật profile");
         printLine("3. Xem tài liệu mình upload");
@@ -305,12 +305,12 @@ public class MainMenuView {
     }
 
     private void createRequestPost() {
-        printLine("\n--- UC-10a Tạo bài yêu cầu tài liệu ---");
+        printLine("\n--- Tạo bài yêu cầu tài liệu ---");
         printResult(context.getRequestPostController().createPost(prompt("Title: "), prompt("Content: ")));
     }
 
     private void myRequestPosts() {
-        printLine("\n--- UC-10a Bài yêu cầu của tôi ---");
+        printLine("\n--- Bài yêu cầu của tôi ---");
         printResult(context.getRequestPostController().myPosts());
         printLine("1. Sửa bài");
         printLine("2. Xóa bài");
@@ -338,7 +338,7 @@ public class MainMenuView {
     }
 
     private void manageUsers() {
-        printLine("\n--- UC-4 Quản trị người dùng ---");
+        printLine("\n--- Quản trị người dùng ---");
         viewUsers();
         printLine("1. Đổi role USER/MODERATOR");
         printLine("2. Khóa/mở khóa tài khoản");
@@ -373,7 +373,7 @@ public class MainMenuView {
     }
 
     private void reviewRequestPosts() {
-        printLine("\n--- UC-10b Duyệt bài yêu cầu tài liệu ---");
+        printLine("\n--- Duyệt bài yêu cầu tài liệu ---");
         OperationResult<?> pendingResult = context.getRequestPostController().pendingPosts();
         printResult(pendingResult);
         if (!pendingResult.isSuccess()) {
@@ -394,7 +394,7 @@ public class MainMenuView {
     }
 
     private void moderateForum() {
-        printLine("\n--- UC-10c Kiểm soát nội dung forum ---");
+        printLine("\n--- Kiểm soát nội dung forum ---");
         printResult(context.getForumModerationController().viewForumContent());
         printLine("1. Ẩn bài viết");
         printLine("2. Xóa bài viết");
